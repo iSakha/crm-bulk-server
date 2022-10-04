@@ -1,0 +1,8 @@
+{
+    "host": "localhost",
+    "port": 3306,
+    "user": "dev_user",
+    "database": "backup_crm_bulk",
+    "password": "2836",
+    "multipleStatements": true
+}
