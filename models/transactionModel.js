@@ -27,7 +27,7 @@ const pool = mysql.createPool({
 // });
 
 const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
-    console.log("createEvent transaction")
+    console.log("createEvent transaction");
 
     let msg = "";
     return new Promise((resolve, reject) => {
@@ -181,7 +181,66 @@ const createEventPhase = (eventRow, phaseArr) => {
 }
 
 const createEventEquip = (eventRow, bookEquipArr) => {
+    console.log("createEventEquip transaction");
+    let msg = "";
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                msg = "Error occurred while getting the connection";
+                console.log("err:", err)
+                resolve([{ status: 400 }, { msg: msg }]);
+                return reject(msg);
+            }
+            return connection.beginTransaction(err => {
+                if (err) {
+                    msg = "Error occurred while creating the transaction";
+                    console.log("err:", err)
+                    resolve([{ status: 400 }, { msg: msg }]);
+                    return reject(msg);
+                }
 
+                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idEventCity, idEventPlace, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
+                    if (err) {
+                        return connection.rollback(() => {
+                            connection.release();
+                            console.log("err:", err);
+                            msg = "Inserting eventRow to `t_events` table failed";
+                            resolve([{ status: 400 }, { msg: msg }]);
+                            return reject(msg);
+                        });
+                    }
+                    return connection.query('INSERT INTO `t_event_equipment` (idEvent, idModel, qtt, idWarehouse, idUser, unixTime) VALUES ?', [bookEquipArr], err => {
+                        if (err) {
+                            return connection.rollback(() => {
+                                connection.release();
+                                console.log("err:", err);
+                                msg = "Inserting bookEquipArr to `t_event_equipment` table failed";
+                                resolve([{ status: 400 }, { msg: msg }]);
+                                return reject(msg);
+                            });
+                        }
+                        return connection.commit(err => {
+                            if (err) {
+                                return connection.rollback(() => {
+                                    connection.release();
+                                    console.log("err:", err);
+                                    msg = "Commit failed";
+                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    return reject(msg);
+                                });
+                            }
+
+                            msg = "Success!Created Event with Equipment only!"
+                            connection.release();
+                            resolve([{ status: 200 }, { msg: msg }]);
+
+                        })
+                    })
+                })
+
+            })
+        })
+    })
 }
 
 const createEventShort = (eventRow) => {

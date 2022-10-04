@@ -319,10 +319,14 @@ exports.create = async (req, res) => {
             let dateStart = new Date(req.body.time.start.slice(0, 10));
             let dateEnd = new Date(req.body.time.end.slice(0, 10));
             // console.log("createDaysArray:", createBookArray(dateStart, dateEnd, req.body));
-            bookCalendarArr = createBookArray(dateStart, dateEnd, req.body);
+            if (req.body.phase.length > 0) {
+                bookCalendarArr = createBookArray(dateStart, dateEnd, req.body);
+                console.log("bookEquipArr:", bookEquipArr);
+            }
+
         }
 
-        console.log("bookEquipArr:", bookEquipArr);
+
 
         let eventRow = Event.destructObj(req.body);
 
@@ -499,11 +503,13 @@ exports.createTrans = async (req, res) => {
             let dateStart = new Date(req.body.time.start.slice(0, 10));
             let dateEnd = new Date(req.body.time.end.slice(0, 10));
             // console.log("createDaysArray:", createBookArray(dateStart, dateEnd, req.body));
-            bookCalendarArr = createBookArray(dateStart, dateEnd, req.body);
-            console.log("bookEquipArr:", bookEquipArr);
+            if (req.body.phase.length > 0) {
+                bookCalendarArr = createBookArray(dateStart, dateEnd, req.body);
+                console.log("bookEquipArr:", bookEquipArr);
+            }
         }
 
-        
+
 
         let eventRow = Event.destructObj(req.body);
 
@@ -513,15 +519,15 @@ exports.createTrans = async (req, res) => {
                 if (req.body.booking.length > 0) {
                     responseDB = await trans.createEventFull(eventRow, phaseArr, bookEquipArr, bookCalendarArr);
                     return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
-                }else {
+                } else {
                     responseDB = await trans.createEventPhase(eventRow, phaseArr);
                     return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 }
-            }else {
-                if(req.body.booking.length > 0) {
-                    responseDB = await trans.createEventEquip(eventRow,bookEquipArr);
+            } else {
+                if (req.body.booking.length > 0) {
+                    responseDB = await trans.createEventEquip(eventRow, bookEquipArr);
                     return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
-                }else {
+                } else {
                     const [newEvent] = await Event.create(eventRow);
                     console.log("result newEvent:", newEvent);
                 }
