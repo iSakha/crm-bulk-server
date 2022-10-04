@@ -357,6 +357,49 @@ exports.createTrans = async (req, res) => {
     }
 }
 
+exports.deleteTrans = async (req, res) => {
+    let status = await auth.authenticateJWT(req, res);
+    let userId = status.id;
+    let unixTime = Date.now();
+    let responseDB;
+
+    if (status.status === 200) {
+
+
+        console.log("authentication successfull!");
+
+        try {
+            const [delEvent] = await Event.copyRow(req.params.id);
+            console.log("delEvent:", delEvent);
+            if (delEvent.length > 0) {
+                delEvent[0].idUpdatedBy = userId;
+                delEvent[0].unixTime = unixTime;
+                delEvent[0].is_deleted = 1;
+
+                let delEventRow = Object.values(delEvent[0]);
+                console.log("delEventRow:", delEventRow);
+
+                responseDB = await trans.deleteEvent(req.params.id, delEventRow);
+                return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+
+            } else {
+                return res.status(200).json({ msg: `Мероприятия с id=${req.params.id} не существует` });
+            }
+        } catch (error) {
+            console.log("error:", error);
+            res.status(500).json({ msg: "We have problems with deleting event data from database" });
+            return {
+                error: true,
+                message: 'Error from database'
+            }
+        }
+
+
+    }else {
+        res.status(status.status).json({ msg: "We have problems with JWT authentication" });
+    }
+}
+
 function createEventId() {
     let d = new Date();
     let utc = d.getTime().toString();

@@ -28,7 +28,6 @@ const pool = mysql.createPool({
 
 const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
     console.log("createEvent transaction");
-
     let msg = "";
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
@@ -276,6 +275,99 @@ const createEventShort = (eventRow) => {
 }
 
 
+const deleteEvent = (idEvent, eventRow) => {
+    console.log("createEvent transaction");
+    let msg = "";
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                msg = "Error occurred while getting the connection";
+                console.log("err:", err)
+                resolve([{ status: 400 }, { msg: msg }]);
+                return reject(msg);
+            }
+            return connection.beginTransaction(err => {
+                if (err) {
+                    msg = "Error occurred while creating the transaction";
+                    console.log("err:", err)
+                    resolve([{ status: 400 }, { msg: msg }]);
+                    return reject(msg);
+                }
+                return connection.execute('UPDATE t_events SET is_deleted=1 WHERE idEvent=?', [idEvent], err => {
+                    if (err) {
+                        return connection.rollback(() => {
+                            connection.release();
+                            console.log("err:", err);
+                            msg = `Mark is_deleted event with id = ${idEvent} failed`;
+                            resolve([{ status: 400 }, { msg: msg }]);
+                            return reject(msg);
+                        });
+
+                    };
+                    return connection.execute('INSERT INTO `t_events`(idEvent, idWarehouse, title, start, end, idManager_1,  idEventCity, idEventPlace, idClient, idCreatedBy, createdAt, notes, idStatus, idPhase, phaseTimeStart, phaseTimeEnd, idUpdatedBy, updatedAt, filledUp, is_deleted, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', eventRow, err => {
+                        if (err) {
+                            return connection.rollback(() => {
+                                connection.release();
+                                console.log("err:", err);
+                                msg = "Copy eventRow to `t_events` table failed";
+                                resolve([{ status: 400 }, { msg: msg }]);
+                                return reject(msg);
+                            });
+                        }
+                        return connection.execute('UPDATE t_event_phase SET t_event_phase.is_deleted = 1 WHERE t_event_phase.idEvent=?', [idEvent], err => {
+                            if (err) {
+                                return connection.rollback(() => {
+                                    connection.release();
+                                    console.log("err:", err);
+                                    msg = `Mark is_deleted phase with id = ${idEvent} failed`;
+                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    return reject(msg);
+                                });
+                            }
+                            return connection.execute('UPDATE t_event_equipment SET t_event_equipment.is_deleted = 1 WHERE t_event_equipment.idEvent=?', [idEvent], err => {
+                                if (err) {
+                                    return connection.rollback(() => {
+                                        connection.release();
+                                        console.log("err:", err);
+                                        msg = `Mark is_deleted event_equipment with id = ${idEvent} failed`;
+                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        return reject(msg);
+                                    });
+                                }
+                                return connection.execute('UPDATE t_booking_calendar SET t_booking_calendar.is_deleted = 1 WHERE t_booking_calendar.idEvent=?', [idEvent], err => {
+                                    if (err) {
+                                        return connection.rollback(() => {
+                                            connection.release();
+                                            console.log("err:", err);
+                                            msg = `Mark is_deleted book calendar with id = ${idEvent} failed`;
+                                            resolve([{ status: 400 }, { msg: msg }]);
+                                            return reject(msg);
+                                        });
+                                    }
+                                    return connection.commit(err => {
+                                        if (err) {
+                                            return connection.rollback(() => {
+                                                connection.release();
+                                                console.log("err:", err);
+                                                msg = "Commit when delete event failed";
+                                                resolve([{ status: 400 }, { msg: msg }]);
+                                                return reject(msg);
+                                            });
+                                        }
+                                        msg = `Event with id = ${idEvent} deleted!`
+                                        connection.release();
+                                        resolve([{ status: 200 }, { msg: msg }]);
+                                    })
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+}
+
 
 
 
@@ -283,5 +375,6 @@ module.exports = {
     createEventFull: createEventFull,
     createEventPhase: createEventPhase,
     createEventEquip: createEventEquip,
-    createEventShort: createEventShort
+    createEventShort: createEventShort,
+    deleteEvent: deleteEvent
 }

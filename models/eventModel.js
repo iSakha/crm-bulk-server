@@ -107,5 +107,13 @@ module.exports = class Event {
         }
     }
 
+    static copyRow(idEvent) {
+        try {
+            return db.query('SELECT * FROM t_events WHERE idEvent=? AND is_deleted=0', [idEvent]);
+        } catch (error) {
+            return error;
+        }
+    }
+
 }
 

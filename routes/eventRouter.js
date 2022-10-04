@@ -5,8 +5,6 @@ const router = express.Router();
 router.get('/', eventController.getAll);
 router.get('/event/:id', eventController.getOne);
 router.post('/', eventController.createTrans);
-
-
-router.post('/trans', eventController.createTrans);
+router.delete('/:id', eventController.deleteTrans);
 
 module.exports = router;
