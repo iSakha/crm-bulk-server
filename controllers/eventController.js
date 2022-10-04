@@ -500,9 +500,10 @@ exports.createTrans = async (req, res) => {
             let dateEnd = new Date(req.body.time.end.slice(0, 10));
             // console.log("createDaysArray:", createBookArray(dateStart, dateEnd, req.body));
             bookCalendarArr = createBookArray(dateStart, dateEnd, req.body);
+            console.log("bookEquipArr:", bookEquipArr);
         }
 
-        console.log("bookEquipArr:", bookEquipArr);
+        
 
         let eventRow = Event.destructObj(req.body);
 
