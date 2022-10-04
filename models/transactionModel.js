@@ -2,6 +2,14 @@ const db = require('../config/database');
 
 const mysql = require('mysql2');
 
+const pool = mysql.createPool({
+    connectionLimit: 10,
+    host: "eu-cdbr-west-03.cleardb.net",
+    user: "bb962375bd6b35",
+    password: "2d88fb96",
+    database: "heroku_14052c548fadd47"
+});
+
 // const pool = mysql.createPool({
 //     connectionLimit: 10,
 //     host: "us-cdbr-east-06.cleardb.net",
@@ -10,13 +18,13 @@ const mysql = require('mysql2');
 //     database: "heroku_2a5cfbff796101a"
 // });
 
-const pool = mysql.createPool({
-    connectionLimit: 10,
-    host: "localhost",
-    user: "dev_user",
-    password: "2836",
-    database: "backup_crm_bulk"
-});
+// const pool = mysql.createPool({
+//     connectionLimit: 10,
+//     host: "localhost",
+//     user: "dev_user",
+//     password: "2836",
+//     database: "backup_crm_bulk"
+// });
 
 const createNew = (row1, row2) => {
     // console.log("row from controller:",row);
