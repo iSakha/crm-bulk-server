@@ -12,7 +12,7 @@ module.exports = class Event {
         this.creator = { id: row.idCreatedBy, name: row.createdBy };
         this.client = { id: row.idClient, name: row.client };
         this.status = { id: row.idStatus, name: row.status };
-        this.location = { city: { id: row.idEventCity, name: row.eventCity }, place: { id: row.idEventPlace, name: row.eventPlace } };
+        this.location = { id: row.idLocation, city: row.city, name: row.place };
         this.manager = { id: row.idManager_1, name: row.manager_1 };
         this.notes = row.notes;
     }
@@ -36,14 +36,9 @@ module.exports = class Event {
 
         if (obj.hasOwnProperty('location')) {
             if (obj.location !== null) {
-                eventRow.push(obj.location.city.id);
-                eventRow.push(obj.location.place.id);
-            } else {
-                eventRow.push(1);
-                eventRow.push(1);
-            }
+                eventRow.push(obj.location.id);;
+            } else eventRow.push(1);
         } else {
-            eventRow.push(1);
             eventRow.push(1);
         }
 

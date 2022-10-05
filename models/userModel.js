@@ -6,14 +6,35 @@ module.exports = class User {
     constructor(row) {
 
         this.id = row.id;
-        this.login = row.login;
+        if (row.login === '') {
+            this.login = null;
+        } else this.login = row.login;
+
         let name = {};
-        name.firstName = row.firstName;
-        name.lastName = row.lastName;
-        name.patronymic = row.patrName;
-        name.fullName = row.fullName;
-        name.avatar = row.avatar;
+
+        if (row.firstName === '') {
+            name.firstName = null;
+        } else name.firstName = row.firstName;
+
+        if (row.lastName === '') {
+            name.lastName = null;
+        } else name.lastName = row.lastName;
+
+        if (row.patrName === '') {
+            name.patronymic = null;
+        } else name.patronymic = row.patrName;
+
+        if (row.fullName === '') {
+            name.fullName = null;
+        } else name.fullName = row.fullName;
+
+        if (row.fullName === '') {
+            name.avatar = null;
+        } else name.avatar = row.avatar;
+
         this.name = name;
+
+        
         let role = {};
         role.id = row.idRole;
         role.name = row.role;
