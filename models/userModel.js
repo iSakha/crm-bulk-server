@@ -34,20 +34,34 @@ module.exports = class User {
 
         this.name = name;
 
-        
+
         let role = {};
+        
         role.id = row.idRole;
         role.name = row.role;
         this.role = role;
+
         let contacts = {};
-        contacts.phone1 = row.phone1;
-        contacts.phone2 = row.phone2;
-        contacts.email = row.email;
+
+        if (row.phone1 === '') {
+            contacts.phone1 = null;
+        } else contacts.phone1 = row.phone1;
+
+        if (row.phone2 === '') {
+            contacts.phone2 = null;
+        } else contacts.phone2 = row.phone2;
+
+        if (row.email === '') {
+            contacts.email = null;
+        } else contacts.email = row.email;
+
         this.contacts = contacts;
+
         let warehouse = {};
         warehouse.id = row.idWarehouse;
         warehouse.name = row.warehouse;
         this.warehouse = warehouse;
+
         let department = {};
         department.id = row.idDepartment;
         department.name = row.department;
