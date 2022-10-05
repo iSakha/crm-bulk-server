@@ -467,7 +467,7 @@ exports.updateTrans  = async (req, res) => {
                     responseDB = await trans.updateEventEquip(req.body.id,eventRow, bookEquipArr);
                     return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 } else {
-                    const [newEvent] = await Event.update(req.body.id,eventRow);
+                    const [newEvent] = await trans.updateEventShort(req.body.id,eventRow);
                     console.log("result newEvent:", newEvent);
                 }
             }
