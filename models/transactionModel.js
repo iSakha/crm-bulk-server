@@ -706,7 +706,7 @@ const updateEventShort = (idEvent, eventRow) => {
                                 });
                             };
 
-                            return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?):', eventRow, err => {
+                            return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
                                 if (err) {
                                     return connection.rollback(() => {
                                         connection.release();
@@ -764,7 +764,7 @@ const deleteEvent = (idEvent, eventRow) => {
 
 
 
-                    return connection.execute('INSERT INTO `t_events`(idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, createdAt, notes, idStatus,  idUpdatedBy, updatedAt, filledUp, is_deleted, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', eventRow, err => {
+                    return connection.execute('INSERT INTO `t_events`(idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, createdAt, notes, idStatus,  idUpdatedBy, updatedAt, filledUp, is_deleted, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
                         if (err) {
                             return connection.rollback(() => {
                                 connection.release();
