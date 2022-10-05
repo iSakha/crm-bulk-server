@@ -276,7 +276,7 @@ const createEventShort = (eventRow) => {
 
 
 const deleteEvent = (idEvent, eventRow) => {
-    console.log("createEvent transaction");
+    console.log("deleteEvent transaction");
     let msg = "";
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
@@ -304,7 +304,7 @@ const deleteEvent = (idEvent, eventRow) => {
                         });
 
                     };
-                    return connection.execute('INSERT INTO `t_events`(idEvent, idWarehouse, title, start, end, idManager_1,  idEventCity, idEventPlace, idClient, idCreatedBy, createdAt, notes, idStatus, idPhase, phaseTimeStart, phaseTimeEnd, idUpdatedBy, updatedAt, filledUp, is_deleted, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', eventRow, err => {
+                    return connection.execute('INSERT INTO `t_events`(idEvent, idWarehouse, title, start, end, idManager_1,  idEventCity, idEventPlace, idClient, idCreatedBy, createdAt, notes, idStatus,  idUpdatedBy, updatedAt, filledUp, is_deleted, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', eventRow, err => {
                         if (err) {
                             return connection.rollback(() => {
                                 connection.release();
@@ -314,7 +314,7 @@ const deleteEvent = (idEvent, eventRow) => {
                                 return reject(msg);
                             });
                         }
-                        return connection.execute('UPDATE t_event_phase SET t_event_phase.is_deleted = 1 WHERE t_event_phase.idEvent=?', [idEvent], err => {
+                        return connection.execute('UPDATE t_event_phases SET t_event_phases.is_deleted = 1 WHERE t_event_phases.idEvent=?', [idEvent], err => {
                             if (err) {
                                 return connection.rollback(() => {
                                     connection.release();

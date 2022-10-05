@@ -377,6 +377,7 @@ exports.deleteTrans = async (req, res) => {
                 delEvent[0].is_deleted = 1;
 
                 let delEventRow = Object.values(delEvent[0]);
+                delEventRow.shift();
                 console.log("delEventRow:", delEventRow);
 
                 responseDB = await trans.deleteEvent(req.params.id, delEventRow);
