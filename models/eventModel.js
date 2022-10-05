@@ -12,7 +12,7 @@ module.exports = class Event {
         this.creator = { id: row.idCreatedBy, name: row.createdBy };
         this.client = { id: row.idClient, name: row.client };
         this.status = { id: row.idStatus, name: row.status };
-        this.location = { city: { id: row.idrowCity, name: row.rowCity }, place: { id: row.idrowPlace, name: row.rowPlace } };
+        this.location = { city: { id: row.idEventCity, name: row.eventCity }, place: { id: row.idEventPlace, name: row.eventPlace } };
         this.manager = { id: row.idManager_1, name: row.manager_1 };
         this.notes = row.notes;
     }

@@ -4,7 +4,7 @@ const db = dtb.promise();
 module.exports = class BookEquipment {
 
     constructor(row) {
-        this.idModel = row.idModel;
+        this.id = row.idModel;
         this.name = row.name;
         this.qtt = row.qtt;
     }
@@ -16,6 +16,7 @@ module.exports = class BookEquipment {
         let equipArr = [];
 
         obj.map(item => {
+            console.log("item:",item);
             let equipRow = [];
             let { id, qtt } = item;
 

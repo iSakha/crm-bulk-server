@@ -343,8 +343,8 @@ exports.createTrans = async (req, res) => {
                     responseDB = await trans.createEventEquip(eventRow, bookEquipArr);
                     return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 } else {
-                    const [newEvent] = await Event.create(eventRow);
-                    console.log("result newEvent:", newEvent);
+                    responseDB = await trans.createEventShort(eventRow);
+                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 }
             }
 
@@ -397,6 +397,86 @@ exports.deleteTrans = async (req, res) => {
 
 
     }else {
+        res.status(status.status).json({ msg: "We have problems with JWT authentication" });
+    }
+}
+
+exports.updateTrans  = async (req, res) => {
+    console.log("updateTrans req.body:", req.body);
+    console.log("updateTrans req.params.id:", req.params.id);
+
+    let status = await auth.authenticateJWT(req, res);
+    let userId = status.id;
+    let unixTime = Date.now();
+    let phaseArr;
+    let bookEquipArr;
+    let bookCalendarArr;
+    let responseDB;
+
+    if (status.status === 200) {
+
+        let result = checkEventBodyValid(req.body);
+        if (result[0].valid === true) {
+            req.body = checkEventPhase(req.body);
+            req.body = checkEventBooking(req.body);
+        } else return res.status(500).json(result[1].msg);
+
+
+        console.log("authentication successfull!");
+
+        req.body.id = req.params.id;
+        req.body.creator = {};
+        req.body.creator.id = userId;
+        req.body.unixTime = unixTime;
+
+        if (req.body.phase.length > 0) {
+
+            phaseArr = Phase.destructObj(req.body.phase, req.body.id, userId, unixTime);
+            req.body.phase = phaseArr;
+            console.log("==============   phase   ==============");
+        }
+
+        if (req.body.booking.length > 0) {
+
+            bookEquipArr = BookEquipment.destructObj(req.body.booking, req.body.id, req.body.warehouse.id, userId, unixTime);
+            req.body.booking = bookEquipArr;
+            console.log("================   booking   ============");
+            let dateStart = new Date(req.body.time.start.slice(0, 10));
+            let dateEnd = new Date(req.body.time.end.slice(0, 10));
+            // console.log("createDaysArray:", createBookArray(dateStart, dateEnd, req.body));
+            if (req.body.phase.length > 0) {
+                bookCalendarArr = createBookArray(dateStart, dateEnd, req.body);
+                console.log("bookEquipArr:", bookEquipArr);
+            }
+        }
+
+        let eventRow = Event.destructObj(req.body);
+
+        try {
+
+            if (req.body.phase.length > 0) {
+                if (req.body.booking.length > 0) {
+                    responseDB = await trans.updateEventFull(req.body.id,eventRow, phaseArr, bookEquipArr, bookCalendarArr);
+                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                } else {
+                    responseDB = await trans.updateEventPhase(req.body.id,eventRow, phaseArr);
+                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                }
+            } else {
+                if (req.body.booking.length > 0) {
+                    responseDB = await trans.updateEventEquip(req.body.id,eventRow, bookEquipArr);
+                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                } else {
+                    const [newEvent] = await Event.update(req.body.id,eventRow);
+                    console.log("result newEvent:", newEvent);
+                }
+            }
+
+        } catch (error) {
+            console.log("error:", error);
+            return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+        }
+    } else {
         res.status(status.status).json({ msg: "We have problems with JWT authentication" });
     }
 }
@@ -506,7 +586,7 @@ function getPhase(date, phase) {
 }
 
 function createBookArray(date1, date2, reqBody) {
-    console.log("reqBody:", reqBody.phase);
+    console.log("reqBody.phase:", reqBody.phase);
     let time = Math.abs(date2 - date1);
     let daysQtt = Math.ceil(time / (1000 * 60 * 60 * 24)) + 1;
     let bookArr = [];
