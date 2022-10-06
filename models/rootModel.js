@@ -83,7 +83,7 @@ module.exports = class Root {
 
     static getStatus() {
         try {
-            return db.query('SELECT * FROM `t_status`');
+            return db.query('SELECT * FROM `t_event_status`');
         } catch (error) {
             return error;
         }        
