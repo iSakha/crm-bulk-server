@@ -281,6 +281,8 @@ exports.createTrans = async (req, res) => {
 
     console.log("createNewEvent req.body:", req.body);
 
+    const rb = Object.assign({}, req.body);
+
     let status = await auth.authenticateJWT(req, res);
     let userId = status.id;
     let unixTime = Date.now();
@@ -288,6 +290,7 @@ exports.createTrans = async (req, res) => {
     let bookEquipArr;
     let bookCalendarArr;
     let responseDB;
+    let msg;
 
     if (status.status === 200) {
 
@@ -333,20 +336,25 @@ exports.createTrans = async (req, res) => {
             if (req.body.phase.length > 0) {
                 if (req.body.booking.length > 0) {
                     responseDB = await trans.createEventFull(eventRow, phaseArr, bookEquipArr, bookCalendarArr);
-                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 } else {
                     responseDB = await trans.createEventPhase(eventRow, phaseArr);
-                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    rb.booking = [];
                 }
             } else {
                 if (req.body.booking.length > 0) {
                     responseDB = await trans.createEventEquip(eventRow, bookEquipArr);
-                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    rb.phase = [];
                 } else {
                     responseDB = await trans.createEventShort(eventRow);
-                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    rb.booking = [];
+                    rb.phase = [];
                 }
             }
+            msg = `Мероприятие успешно создано. idEvent = ${req.body.id}`
+            return res.status(responseDB[0].status).json([{ msg: msg },rb]);
 
         } catch (error) {
             console.log("error:", error);
@@ -396,12 +404,12 @@ exports.deleteTrans = async (req, res) => {
         }
 
 
-    }else {
+    } else {
         res.status(status.status).json({ msg: "We have problems with JWT authentication" });
     }
 }
 
-exports.updateTrans  = async (req, res) => {
+exports.updateTrans = async (req, res) => {
     console.log("updateTrans req.body:", req.body);
     console.log("updateTrans req.params.id:", req.params.id);
 
@@ -456,18 +464,18 @@ exports.updateTrans  = async (req, res) => {
 
             if (req.body.phase.length > 0) {
                 if (req.body.booking.length > 0) {
-                    responseDB = await trans.updateEventFull(req.body.id,eventRow, phaseArr, bookEquipArr, bookCalendarArr);
+                    responseDB = await trans.updateEventFull(req.body.id, eventRow, phaseArr, bookEquipArr, bookCalendarArr);
                     return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 } else {
-                    responseDB = await trans.updateEventPhase(req.body.id,eventRow, phaseArr);
+                    responseDB = await trans.updateEventPhase(req.body.id, eventRow, phaseArr);
                     return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 }
             } else {
                 if (req.body.booking.length > 0) {
-                    responseDB = await trans.updateEventEquip(req.body.id,eventRow, bookEquipArr);
+                    responseDB = await trans.updateEventEquip(req.body.id, eventRow, bookEquipArr);
                     return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 } else {
-                    responseDB = await trans.updateEventShort(req.body.id,eventRow);
+                    responseDB = await trans.updateEventShort(req.body.id, eventRow);
                     return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 }
             }
