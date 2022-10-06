@@ -339,6 +339,7 @@ exports.createTrans = async (req, res) => {
                     // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 } else {
                     responseDB = await trans.createEventPhase(eventRow, phaseArr);
+                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                     rb.booking = [];
                 }
             } else {
@@ -354,7 +355,7 @@ exports.createTrans = async (req, res) => {
                 }
             }
             msg = `Мероприятие успешно создано. idEvent = ${req.body.id}`
-            return res.status(responseDB[0].status).json([{ msg: msg },rb]);
+            return res.status(responseDB[0].status).json([{ msg: msg }, rb]);
 
         } catch (error) {
             console.log("error:", error);
@@ -413,6 +414,12 @@ exports.updateTrans = async (req, res) => {
     console.log("updateTrans req.body:", req.body);
     console.log("updateTrans req.params.id:", req.params.id);
 
+    const rb = Object.assign({}, req.body);
+    if (rb.hasOwnProperty('id')) {
+        delete rb.id;
+    }
+
+
     let status = await auth.authenticateJWT(req, res);
     let userId = status.id;
     let unixTime = Date.now();
@@ -465,20 +472,27 @@ exports.updateTrans = async (req, res) => {
             if (req.body.phase.length > 0) {
                 if (req.body.booking.length > 0) {
                     responseDB = await trans.updateEventFull(req.body.id, eventRow, phaseArr, bookEquipArr, bookCalendarArr);
-                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 } else {
                     responseDB = await trans.updateEventPhase(req.body.id, eventRow, phaseArr);
-                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    rb.booking = [];
                 }
             } else {
                 if (req.body.booking.length > 0) {
                     responseDB = await trans.updateEventEquip(req.body.id, eventRow, bookEquipArr);
-                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    rb.phase = [];
                 } else {
                     responseDB = await trans.updateEventShort(req.body.id, eventRow);
-                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                    rb.booking = [];
+                    rb.phase = [];
                 }
             }
+
+            msg = `Мероприятие успешно обновлено. idEvent = ${req.params.id}`
+            return res.status(responseDB[0].status).json([{ msg: msg }, rb, { "id": req.params.id }]);
 
         } catch (error) {
             console.log("error:", error);
