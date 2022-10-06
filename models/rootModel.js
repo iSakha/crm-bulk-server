@@ -91,7 +91,7 @@ module.exports = class Root {
 
     static addStatus() {
         try {
-            return db.query('INSERT INTO `t_status`(status) VALUES("new status")');
+            return db.query('INSERT INTO `t_event_status`(status) VALUES("new status")');
         } catch (error) {
             return error;
         }         
@@ -99,7 +99,7 @@ module.exports = class Root {
 
     static getPhases() {
         try {
-            return db.query('SELECT * FROM `t_phase`');
+            return db.query('SELECT * FROM `t_event_phase`');
         } catch (error) {
             return error;
         } 
