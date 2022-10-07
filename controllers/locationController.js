@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const Location = require('../models/locationModel');
 // const utils = require('../utils/utils');
 const auth = require('../controllers/authController');
-const trans = require('../models/transactionModel');
+const trans = require('../models/transactionEventModel');
 
 
 exports.createNewLocation = async (req, res) => {

@@ -24,12 +24,10 @@ module.exports = class Moving {
         this.creator.name = row.creatorName;
 
     }
-    static destructObj(userId, obj) {
+    static destructObj(userId, obj, unixTime) {
 
         let movRow = [];
         let modelArr = [];
-
-        let unixTime = Date.now();
 
         movRow.push(obj.id);
         movRow.push(obj.warehouseOut.id);
@@ -50,12 +48,13 @@ module.exports = class Moving {
                     modelRow.push(obj.id);
                     modelRow.push(item.id);
                     modelRow.push(item.qtt);
+                    modelRow.push(unixTime);
 
                     modelArr.push(modelRow);
                 })
             }
 
-            return modelArr;
+            return [movRow,modelArr];
         }
     }
 

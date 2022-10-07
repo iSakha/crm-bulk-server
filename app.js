@@ -11,6 +11,7 @@ const userRouter = require("./routes/userRouter");
 const eventRouter = require("./routes/eventRouter");
 const calendarRouter = require("./routes/bookCalendarRouter");
 const locationRouter = require("./routes/locationRouter");
+const movingRouter = require("./routes/movingRouter");
 
 
 const PORT = process.env.PORT || 80;
@@ -27,6 +28,7 @@ app.use('/users', userRouter);
 app.use('/events', eventRouter);
 app.use('/booking', calendarRouter);
 app.use('/locations', locationRouter);
+app.use('/movings', movingRouter);
 
 
 //          S E R V E R

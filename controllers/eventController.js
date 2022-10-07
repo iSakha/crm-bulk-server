@@ -2,9 +2,8 @@ const jwt = require('jsonwebtoken');
 const Event = require('../models/eventModel');
 const Phase = require('../models/phaseModel');
 const BookEquipment = require('../models/bookEquipModel');
-const BookCalendar = require('../models/bookCalendarModel');
 const auth = require('../controllers/authController');
-const trans = require('../models/transactionModel');
+const trans = require('../models/transactionEventModel');
 
 exports.getAll = async (req, res) => {
 
@@ -286,9 +285,10 @@ exports.createTrans = async (req, res) => {
     let status = await auth.authenticateJWT(req, res);
     let userId = status.id;
     let unixTime = Date.now();
-    let phaseArr;
-    let bookEquipArr;
-    let bookCalendarArr;
+    let eventRow = [];
+    let phaseArr = [];
+    let bookEquipArr = [];
+    let bookCalendarArr = [];
     let responseDB;
     let msg;
 
@@ -329,7 +329,7 @@ exports.createTrans = async (req, res) => {
             }
         }
 
-        let eventRow = Event.destructObj(req.body);
+        eventRow = Event.destructObj(req.body);
 
         try {
 
