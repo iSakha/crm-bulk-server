@@ -48,6 +48,7 @@ module.exports = class Moving {
                     modelRow.push(obj.id);
                     modelRow.push(item.id);
                     modelRow.push(item.qtt);
+                    modelRow.push(1);
                     modelRow.push(unixTime);
 
                     modelArr.push(modelRow);
@@ -60,7 +61,7 @@ module.exports = class Moving {
 
     static getAll() {
         try {
-            return db.query('SELECT * FROM `v_moving`');
+            return db.query('SELECT * FROM `v_movings`');
         } catch (error) {
             return error;
         }
