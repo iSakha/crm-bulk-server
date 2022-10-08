@@ -122,14 +122,13 @@ exports.createNew = async (req, res) => {
     if (status.status === 200) {
         req.body.id = createMovId();
         let unixTime = Date.now();
-        let destructArr = Moving.destructObj(userId, req.body, unixTime);
+        
+        let modelArr = MovingEquip.destructObj(req.body, unixTime);
 
-        console.log("destructArr:", destructArr);
-        let movRow = destructArr[0];
-        let modelRow = destructArr[1];
+        let movRow = Moving.destructObj(userId, req.body, unixTime);
 
         try {
-            responseDB = await trans.createMoving(movRow, modelRow);
+            responseDB = await trans.createMoving(movRow, modelArr);
             return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
         } catch (error) {
             console.log("error:", error);
@@ -197,34 +196,26 @@ exports.update = async (req, res) => {
     if (status.status === 200) {
         req.body.id = req.params.id;
         let unixTime = Date.now();
-        let destructArr = Moving.destructObj(userId, req.body, unixTime);
 
-        let movRow = destructArr[0];
-        let modelRow = destructArr[1];
-
-        console.log("movRow destructObj:", movRow);
-        console.log("modelRow destructObj:", modelRow);
+        let modelArr = MovingEquip.destructObj(req.body, unixTime);
+        let movRow = Moving.destructObj(userId, req.body, unixTime);
 
         if (movRow[5] === 3) {
-            modelRow.map(item => {
+            modelArr.map(item => {
                 item[3] = 4;
             })
         }else if (movRow[5] === 4){
-            modelRow.map(item => {
+            modelArr.map(item => {
                 item[3] = 2;
             })
         }else {
-            modelRow.map(item => {
+            modelArr.map(item => {
                 item[3] = 1;
             })
         }
 
-
-        console.log("movRow:", movRow);
-        console.log("modelRow:", modelRow);
-
         try {
-            responseDB = await trans.updateMoving(req.params.id, movRow, modelRow);
+            responseDB = await trans.updateMoving(req.params.id, movRow, modelArr);
             return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
 
         } catch (error) {

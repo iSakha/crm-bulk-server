@@ -24,10 +24,11 @@ module.exports = class Moving {
         this.creator.name = row.creatorName;
 
     }
+
     static destructObj(userId, obj, unixTime) {
 
         let movRow = [];
-        let modelArr = [];
+
 
         movRow.push(obj.id);
         movRow.push(obj.warehouseOut.id);
@@ -39,26 +40,10 @@ module.exports = class Moving {
         movRow.push(userId);
         movRow.push(unixTime);
 
-        if (obj.hasOwnProperty('model')) {
-            if (obj.model.length > 0) {
-                console.log("obj.model:", obj.model);
-                obj.model.map(item => {
-                    // let { id, name, qtt } = item;
-                    let modelRow = [];
-                    modelRow.push(obj.id);
-                    modelRow.push(item.id);
-                    modelRow.push(item.qtt);
-                    modelRow.push(1);
-                    modelRow.push(unixTime);
 
-                    modelArr.push(modelRow);
-                })
-            }
-
-            return [movRow,modelArr];
-        }
+        return movRow;
     }
-
+    
     static getAll() {
         try {
             return db.query('SELECT * FROM `v_movings`');

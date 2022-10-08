@@ -9,6 +9,29 @@ module.exports = class MovingEquip {
         this.name = row.modelName;
         this.qtt = row.qtt;
     }
+    
+    static destructObj(obj, unixTime) {
+
+        let modelArr = [];
+        
+        if (obj.hasOwnProperty('model')) {
+            if (obj.model.length > 0) {
+                console.log("obj.model:", obj.model);
+                obj.model.map(item => {
+                    let modelRow = [];
+                    modelRow.push(obj.id);
+                    modelRow.push(item.id);
+                    modelRow.push(item.qtt);
+                    modelRow.push(1);
+                    modelRow.push(unixTime);
+
+                    modelArr.push(modelRow);
+                })
+            }
+        }
+        return modelArr; 
+
+    }
 
     static getAll() {
         try {
