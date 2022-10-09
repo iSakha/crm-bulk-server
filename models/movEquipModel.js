@@ -50,22 +50,22 @@ module.exports = class MovingEquip {
         }
     }
 
-    static create(modelRow) {
-        console.log("create_mod modelRow", modelRow);
-        try {
-            return db.query('INSERT INTO `t_mov_equipment` (idMoving, idModel, qtt) VALUES ?', [modelRow]);
-        } catch (error) {
-            return error;
-        }
-    }
+    // static create(modelRow) {
+    //     console.log("create_mod modelRow", modelRow);
+    //     try {
+    //         return db.query('INSERT INTO `t_mov_equipment` (idMoving, idModel, qtt) VALUES ?', [modelRow]);
+    //     } catch (error) {
+    //         return error;
+    //     }
+    // }
 
-    static markMovingDel(id) {
-        try {
-            return db.query('UPDATE t_mov_equipment SET is_deleted=1 WHERE idMoving=?', [id]);
+    // static markMovingDel(id) {
+    //     try {
+    //         return db.query('UPDATE t_mov_equipment SET is_deleted=1 WHERE idMoving=?', [id]);
 
-        } catch (error) {
-            return error;
-        }
-    }
+    //     } catch (error) {
+    //         return error;
+    //     }
+    // }
 
 }

@@ -158,7 +158,80 @@ const updateMoving = (idMoving, movingRow, modelArr) => {
     })
 }
 
+const deleteMoving = (idMoving, movingRow) => {
+    console.log("deleteЬMoving transaction");
+    let msg = "";
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                msg = "Error occurred while getting the connection";
+                console.log("err:", err)
+                resolve([{ status: 400 }, { msg: msg }]);
+                return reject(msg);
+            }
+            return connection.beginTransaction(err => {
+                if (err) {
+                    msg = "Error occurred while creating the transaction";
+                    console.log("err:", err)
+                    resolve([{ status: 400 }, { msg: msg }]);
+                    return reject(msg);
+                }
+                console.log("idMoving:",idMoving);
+                return connection.execute('UPDATE `t_movings` SET `is_deleted`=1 WHERE `id`=?', [idMoving], err => {
+                    if (err) {
+                        return connection.rollback(() => {
+                            connection.release();
+                            console.log("err:", err);
+                            msg = `Mark is_deleted moving with id = ${idMoving} failed`;
+                            resolve([{ status: 400 }, { msg: msg }]);
+                            return reject(msg);
+                        });
+                    };
+                    console.log("movingRow:",movingRow);
+                    return connection.execute('INSERT INTO `t_movings` (id, idWhOut, idWhIn, dateOut, dateIn, idStatus, notes, idUser, is_deleted, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', movingRow, err => {
+                        if (err) {
+                            return connection.rollback(() => {
+                                connection.release();
+                                console.log("err:", err);
+                                msg = "Copy movingRow to `t_movings` table failed";
+                                resolve([{ status: 400 }, { msg: msg }]);
+                                return reject(msg);
+                            });
+                        }
+                        return connection.execute('UPDATE `t_mov_equipment` SET `t_mov_equipment`.`is_deleted` = 1 WHERE `t_mov_equipment`.`idMoving`=?', [idMoving], err => {
+                            if (err) {
+                                return connection.rollback(() => {
+                                    connection.release();
+                                    console.log("err:", err);
+                                    msg = `Mark is_deleted t_mov_equipment table with idMoving = ${idMoving} failed`;
+                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    return reject(msg);
+                                });
+                            }
+                            return connection.commit(err => {
+                                if (err) {
+                                    return connection.rollback(() => {
+                                        connection.release();
+                                        console.log("err:", err);
+                                        msg = "Commit when delete event failed";
+                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        return reject(msg);
+                                    });
+                                } 
+                                msg = `Moving with id = ${idMoving} deleted!`
+                                connection.release();
+                                resolve([{ status: 200 }, { msg: msg }]);
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+}
+
 module.exports = {
     createMoving: createMoving,
-    updateMoving: updateMoving
+    updateMoving: updateMoving,
+    deleteMoving: deleteMoving
 }

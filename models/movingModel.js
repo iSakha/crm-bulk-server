@@ -60,30 +60,9 @@ module.exports = class Moving {
         }
     }
 
-    // static create(movRow) {
-    //     console.log("create_mod movRow", movRow);
-    //     try {
-    //         return db.query('INSERT INTO `t_moving` (id, idWhOut, idWhIn, dateOut, dateIn, idStatus, notes, idUser, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', movRow);
-    //     } catch (error) {
-    //         return error;
-    //     }
-    // }
-
-    // for update
-    // static markMovingDel(id) {
-    //     try {
-    //         return db.query('UPDATE t_moving SET is_deleted=1 WHERE id=?', [id]);
-
-    //     } catch (error) {
-    //         return error;
-    //     }
-    // }
-
-    // for delete
-    static markMovDel(id,userId,unixTime) {
+    static copyRow(idMoving) {
         try {
-            return db.query('UPDATE t_moving SET is_deleted=1, idUser=?, unixTime=? WHERE id=?', [userId,unixTime,id]);
-
+            return db.query('SELECT * FROM `t_movings` WHERE id=? AND is_deleted=0', [idMoving]);
         } catch (error) {
             return error;
         }

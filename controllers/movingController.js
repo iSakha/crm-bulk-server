@@ -110,9 +110,11 @@ exports.getOne = async (req, res) => {
 
 }
 
-exports.createNew = async (req, res) => {
+exports.create = async (req, res) => {
 
     console.log("createNew req.body:", req.body);
+
+    const rb = Object.assign({}, req.body);
 
     let status = await auth.authenticateJWT(req, res);
     let userId = status.id;
@@ -129,7 +131,9 @@ exports.createNew = async (req, res) => {
 
         try {
             responseDB = await trans.createMoving(movRow, modelArr);
-            return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+            // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+            msg = `Перемещение успешно создано. idEvent = ${req.body.id}`
+            return res.status(responseDB[0].status).json([{ msg: msg }, rb,{id:req.body.id}]);
         } catch (error) {
             console.log("error:", error);
             return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
@@ -272,19 +276,35 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
 
-    console.log("delete id:", req.params.id);
+    console.log("deleteTrans id:", req.params.id);
     let status = await auth.authenticateJWT(req, res);
-
     let userId = status.id;
-    // req.body.id = req.params.id;
     let unixTime = Date.now();
+    let responseDB;
 
     if (status.status === 200) {
 
         try {
 
-            const [result] = await Moving.markMovDel(req.params.id, userId, unixTime);
-            console.log("result markMovDel:", result);
+            console.log("authentication successfull!");
+
+            const [delMoving] = await Moving.copyRow(req.params.id);
+            console.log("delMoving:", delMoving);
+
+            if (delMoving.length > 0) {
+                delMoving[0].idUser = userId;
+                delMoving[0].unixTime = unixTime;
+                delMoving[0].is_deleted = 1;
+
+                let delMovingRow = Object.values(delMoving[0]);
+                console.log("delMovingRow:", delMovingRow);
+
+                responseDB = await trans.deleteMoving(req.params.id, delMovingRow);
+                return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+
+            } else {
+                return res.status(200).json({ msg: `Перемещения с id=${req.params.id} не существует` });
+            }
 
         } catch (error) {
             console.log("error:", error);
@@ -295,31 +315,31 @@ exports.delete = async (req, res) => {
             }
         }
 
-        let notifyRow = [];
+        // let notifyRow = [];
 
-        notifyRow.push(userId);
-        notifyRow.push("delete");
-        notifyRow.push("moving");
-        notifyRow.push(req.params.id);
-        notifyRow.push(1);
-        notifyRow.push(unixTime);
+        // notifyRow.push(userId);
+        // notifyRow.push("delete");
+        // notifyRow.push("moving");
+        // notifyRow.push(req.params.id);
+        // notifyRow.push(1);
+        // notifyRow.push(unixTime);
 
-        try {
+        // try {
 
-            // write to `t_notifications` table
-            const [notification] = await Notification.createNew(notifyRow);
-            console.log("result notification:", notification);
+        //     // write to `t_notifications` table
+        //     const [notification] = await Notification.createNew(notifyRow);
+        //     console.log("result notification:", notification);
 
-        } catch (error) {
-            console.log("error:", error);
-            res.status(500).json({ msg: "We have problems with writing notification to database" });
-            return {
-                error: true,
-                message: 'Error from database'
-            }
-        }
+        // } catch (error) {
+        //     console.log("error:", error);
+        //     res.status(500).json({ msg: "We have problems with writing notification to database" });
+        //     return {
+        //         error: true,
+        //         message: 'Error from database'
+        //     }
+        // }
 
-        return res.status(200).json([{ msg: `Перемещение успешно  удалено. idMoving = ${req.params.id}` }]);
+        // return res.status(200).json([{ msg: `Перемещение успешно  удалено. idMoving = ${req.params.id}` }]);
 
     } else {
         res.status(status.status).json({ msg: "We have problems with JWT authentication" });
