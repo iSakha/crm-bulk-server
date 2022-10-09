@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const Moving = require('../models/movingModel');
 const MovingEquip = require('../models/movEquipModel');
 const trans = require('../models/transactionMovingModel');
-// const Notification = require('../models/notificateModel');
+const Notification = require('../models/notificateModel');
 // const utils = require('../utils/utils');
 const auth = require('../controllers/authController');
 
@@ -129,53 +129,44 @@ exports.create = async (req, res) => {
 
         let movRow = Moving.destructObj(userId, req.body, unixTime);
 
+        let notifyRow = [];
+
+        notifyRow.push(userId);
+        notifyRow.push("create");
+        notifyRow.push("moving");
+        notifyRow.push(req.body.id);
+        notifyRow.push(req.body.warehouseOut.id);
+        notifyRow.push(unixTime);
+
         try {
             responseDB = await trans.createMoving(movRow, modelArr);
-            // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+
             msg = `Перемещение успешно создано. idEvent = ${req.body.id}`
+
+            try {
+
+                // write to `t_notifications` table
+                const [notification] = await Notification.createNew(notifyRow);
+                console.log("result notification:", notification);
+
+            } catch (error) {
+                console.log("error:", error);
+                res.status(500).json({ msg: "We have problems with writing notification to database" });
+                return {
+                    error: true,
+                    message: 'Error from database'
+                }
+            }
+
             return res.status(responseDB[0].status).json([{ msg: msg }, rb,{id:req.body.id}]);
         } catch (error) {
             console.log("error:", error);
             return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
         }
 
-        // if (modelRow.length > 0) {
-        //     try {
-        //         const [newModel] = await MovingEquip.create(modelRow);
-        //         console.log("result modelRow:", newModel);
-        //     } catch (error) {
-        //         console.log("error:", error);
-        //         res.status(500).json({ msg: "We have problems with writing model data to database" });
-        //         return {
-        //             error: true,
-        //             message: 'Error from database'
-        //         }
-        //     }
-        // }
 
-        //     let unixTime = movRow[movRow.length - 1];
-        //     let notifyRow = [];
 
-        //     notifyRow.push(userId);
-        //     notifyRow.push("create");
-        //     notifyRow.push("moving");
-        //     notifyRow.push(req.body.id);
-        //     notifyRow.push(req.body.warehouseOut.id);
-        //     notifyRow.push(unixTime);
 
-        //     try {
-
-        //         // write to `t_notifications` table
-        //         const [notification] = await Notification.createNew(notifyRow);
-        //         console.log("result notification:", notification);
-
-        //     } catch (error) {
-        //         console.log("error:", error);
-        //         res.status(500).json({ msg: "We have problems with writing notification to database" });
-        //         return {
-        //             error: true,
-        //             message: 'Error from database'
-        //         }
     }
 
     // return res.status(200).json([{ msg: `Перемещение успешно создано. idMoving = ${req.body.id}` }, req.body]);
@@ -218,8 +209,33 @@ exports.update = async (req, res) => {
             })
         }
 
+        let notifyRow = [];
+
+        notifyRow.push(userId);
+        notifyRow.push("update");
+        notifyRow.push("moving");
+        notifyRow.push(req.body.id);
+        notifyRow.push(req.body.warehouseOut.id);
+        notifyRow.push(unixTime);
+
         try {
             responseDB = await trans.updateMoving(req.params.id, movRow, modelArr);
+
+            try {
+
+                // write to `t_notifications` table
+                const [notification] = await Notification.createNew(notifyRow);
+                console.log("result notification:", notification);
+
+            } catch (error) {
+                console.log("error:", error);
+                res.status(500).json({ msg: "We have problems with writing notification to database" });
+                return {
+                    error: true,
+                    message: 'Error from database'
+                }
+            }
+
             return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
 
         } catch (error) {
@@ -299,7 +315,32 @@ exports.delete = async (req, res) => {
                 let delMovingRow = Object.values(delMoving[0]);
                 console.log("delMovingRow:", delMovingRow);
 
+                let notifyRow = [];
+
+                notifyRow.push(userId);
+                notifyRow.push("delete");
+                notifyRow.push("moving");
+                notifyRow.push(req.params.id);
+                notifyRow.push(delMoving[0].idWhOut);
+                notifyRow.push(unixTime);
+
                 responseDB = await trans.deleteMoving(req.params.id, delMovingRow);
+
+                try {
+
+                    // write to `t_notifications` table
+                    const [notification] = await Notification.createNew(notifyRow);
+                    console.log("result notification:", notification);
+
+                } catch (error) {
+                    console.log("error:", error);
+                    res.status(500).json({ msg: "We have problems with writing notification to database" });
+                    return {
+                        error: true,
+                        message: 'Error from database'
+                    }
+                }
+
                 return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
 
             } else {

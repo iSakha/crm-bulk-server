@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const Event = require('../models/eventModel');
 const Phase = require('../models/phaseModel');
 const BookEquipment = require('../models/bookEquipModel');
+const Notification = require('../models/notificateModel');
 const auth = require('../controllers/authController');
 const trans = require('../models/transactionEventModel');
 
@@ -331,6 +332,15 @@ exports.createTrans = async (req, res) => {
 
         eventRow = Event.destructObj(req.body);
 
+        let notifyRow = [];
+
+        notifyRow.push(userId);
+        notifyRow.push("create");
+        notifyRow.push("event");
+        notifyRow.push(req.body.id);
+        notifyRow.push(req.body.warehouse.id);
+        notifyRow.push(unixTime);
+
         try {
 
             if (req.body.phase.length > 0) {
@@ -354,7 +364,24 @@ exports.createTrans = async (req, res) => {
                     rb.phase = [];
                 }
             }
-            msg = `Мероприятие успешно создано. idEvent = ${req.body.id}`
+
+
+            try {
+
+                // write to `t_notifications` table
+                const [notification] = await Notification.createNew(notifyRow);
+                console.log("result notification:", notification);
+
+            } catch (error) {
+                console.log("error:", error);
+                res.status(500).json({ msg: "We have problems with writing notification to database" });
+                return {
+                    error: true,
+                    message: 'Error from database'
+                }
+            }
+
+            msg = `Мероприятие успешно создано. idEvent = ${req.body.id}`;
             return res.status(responseDB[0].status).json([{ msg: msg }, rb]);
 
         } catch (error) {
@@ -375,6 +402,8 @@ exports.deleteTrans = async (req, res) => {
     if (status.status === 200) {
 
 
+
+
         console.log("authentication successfull!");
 
         try {
@@ -389,7 +418,33 @@ exports.deleteTrans = async (req, res) => {
                 delEventRow.shift();
                 console.log("delEventRow:", delEventRow);
 
+                let notifyRow = [];
+
+                notifyRow.push(userId);
+                notifyRow.push("delete");
+                notifyRow.push("event");
+                notifyRow.push(req.params.id);
+                notifyRow.push(delEvent[0].idWarehouse);
+                notifyRow.push(unixTime);
+
                 responseDB = await trans.deleteEvent(req.params.id, delEventRow);
+
+                try {
+
+                    // write to `t_notifications` table
+                    const [notification] = await Notification.createNew(notifyRow);
+                    console.log("result notification:", notification);
+
+                } catch (error) {
+                    console.log("error:", error);
+                    res.status(500).json({ msg: "We have problems with writing notification to database" });
+                    return {
+                        error: true,
+                        message: 'Error from database'
+                    }
+                }
+
+
                 return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
 
             } else {
@@ -467,6 +522,15 @@ exports.updateTrans = async (req, res) => {
 
         let eventRow = Event.destructObj(req.body);
 
+        let notifyRow = [];
+
+        notifyRow.push(userId);
+        notifyRow.push("update");
+        notifyRow.push("event");
+        notifyRow.push(req.body.id);
+        notifyRow.push(req.body.warehouse.id);
+        notifyRow.push(unixTime);
+
         try {
 
             if (req.body.phase.length > 0) {
@@ -488,6 +552,21 @@ exports.updateTrans = async (req, res) => {
                     // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                     rb.booking = [];
                     rb.phase = [];
+                }
+            }
+
+            try {
+
+                // write to `t_notifications` table
+                const [notification] = await Notification.createNew(notifyRow);
+                console.log("result notification:", notification);
+
+            } catch (error) {
+                console.log("error:", error);
+                res.status(500).json({ msg: "We have problems with writing notification to database" });
+                return {
+                    error: true,
+                    message: 'Error from database'
                 }
             }
 
