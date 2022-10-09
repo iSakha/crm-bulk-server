@@ -43,7 +43,7 @@ module.exports = class Moving {
 
         return movRow;
     }
-    
+
     static getAll() {
         try {
             return db.query('SELECT * FROM `v_movings`');
@@ -54,30 +54,30 @@ module.exports = class Moving {
 
     static getOne(id) {
         try {
-            return db.query('SELECT * FROM `v_moving` WHERE `id`=?', [id]);
+            return db.query('SELECT * FROM `v_movings` WHERE `id`=?', [id]);
         } catch (error) {
             return error;
         }
     }
 
-    static create(movRow) {
-        console.log("create_mod movRow", movRow);
-        try {
-            return db.query('INSERT INTO `t_moving` (id, idWhOut, idWhIn, dateOut, dateIn, idStatus, notes, idUser, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', movRow);
-        } catch (error) {
-            return error;
-        }
-    }
+    // static create(movRow) {
+    //     console.log("create_mod movRow", movRow);
+    //     try {
+    //         return db.query('INSERT INTO `t_moving` (id, idWhOut, idWhIn, dateOut, dateIn, idStatus, notes, idUser, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', movRow);
+    //     } catch (error) {
+    //         return error;
+    //     }
+    // }
 
     // for update
-    static markMovingDel(id) {
-        try {
-            return db.query('UPDATE t_moving SET is_deleted=1 WHERE id=?', [id]);
+    // static markMovingDel(id) {
+    //     try {
+    //         return db.query('UPDATE t_moving SET is_deleted=1 WHERE id=?', [id]);
 
-        } catch (error) {
-            return error;
-        }
-    }
+    //     } catch (error) {
+    //         return error;
+    //     }
+    // }
 
     // for delete
     static markMovDel(id,userId,unixTime) {
