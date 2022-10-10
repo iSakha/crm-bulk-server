@@ -83,4 +83,13 @@ module.exports = class EquipModel {
             return error;
         }
     }
+
+    static getCategories() {
+        try {
+            return db.query('SELECT * FROM `t_category`');
+        } catch (error) {
+            return error;
+        }
+    }
+    
 }

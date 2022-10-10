@@ -14,4 +14,8 @@ router.get('/deps/cats/:id', equipController.getCategoriesByDep);
 // =====================================================================
 router.get('/cats/:idCat', equipController.getModelsByCat);
 
+// Get all categories
+// =====================================================================
+router.get('/cats', equipController.getCategories);
+
 module.exports = router;

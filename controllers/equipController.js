@@ -73,3 +73,26 @@ exports.getModelsByCat = async (req, res) => {
         return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
     }
 }
+
+exports.getCategories = async (req, res) => {
+
+    console.log("getCategories");
+    let status = await auth.authenticateJWT(req, res);
+    console.log("statusCode:", status);
+
+    if (status.status === 200) {
+
+        try {
+            [allCats] = await EquipModel.getCategories();
+            console.log("allCats:", allCats);
+            return res.status(200).json(allCats);
+        } catch (error) {
+            console.log("error:", error);
+            return res.status(500).json({ msg: "We have problems with getting category list from database" });
+        }
+
+    } else {
+        return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
+    }
+
+}
