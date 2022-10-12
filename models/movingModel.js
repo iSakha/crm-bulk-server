@@ -25,18 +25,18 @@ module.exports = class Moving {
 
     }
 
-    static destructObj(userId, obj, unixTime) {
+    static destructObj(reqbody, unixTime, userId) {
 
         let movRow = [];
 
 
-        movRow.push(obj.id);
-        movRow.push(obj.warehouseOut.id);
-        movRow.push(obj.warehouseIn.id);
-        movRow.push(obj.dateOut.slice(0, 16));
-        movRow.push(obj.dateIn.slice(0, 16));
-        movRow.push(obj.status.id);
-        movRow.push(obj.notes);
+        movRow.push(reqbody.id);
+        movRow.push(reqbody.warehouseOut.id);
+        movRow.push(reqbody.warehouseIn.id);
+        movRow.push(reqbody.dateOut.slice(0, 16));
+        movRow.push(reqbody.dateIn.slice(0, 16));
+        movRow.push(reqbody.status.id);
+        movRow.push(reqbody.notes);
         movRow.push(userId);
         movRow.push(unixTime);
 

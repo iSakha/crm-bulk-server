@@ -9,27 +9,47 @@ module.exports = class MovingEquip {
         this.name = row.modelName;
         this.qtt = row.qtt;
     }
-    
-    static destructObj(obj, unixTime) {
+
+    static destructModel(reqbody, unixTime) {
 
         let modelArr = [];
-        
-        if (obj.hasOwnProperty('model')) {
-            if (obj.model.length > 0) {
-                console.log("obj.model:", obj.model);
-                obj.model.map(item => {
-                    let modelRow = [];
-                    modelRow.push(obj.id);
-                    modelRow.push(item.id);
-                    modelRow.push(item.qtt);
-                    modelRow.push(1);
-                    modelRow.push(unixTime);
+        reqbody.model.map(item => {
 
-                    modelArr.push(modelRow);
-                })
-            }
-        }
-        return modelArr; 
+            let row = [];
+            row.push(reqbody.id);
+            row.push(item.id);
+            row.push(item.qtt);
+            row.push(reqbody.status.id);
+            row.push(unixTime);
+
+            modelArr.push(row);
+        })
+
+        console.log("modelArr_mod:", modelArr);
+        return modelArr;
+
+    }
+
+    static destructModelCalendar(reqbody, unixTime, userId) {
+
+        let modelArr = [];
+        reqbody.model.map(item => {
+
+            let row = [];
+            row.push(reqbody.dateOut);
+            row.push(reqbody.id);
+            row.push(item.id);
+            row.push(item.qtt);
+            row.push(reqbody.warehouseOut.id);
+            row.push(reqbody.warehouseIn.id);
+            row.push(userId);
+            row.push(unixTime);
+
+            modelArr.push(row);
+        })
+
+        console.log("modelArr_mod:", modelArr);
+        return modelArr;
 
     }
 

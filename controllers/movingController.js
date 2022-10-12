@@ -124,7 +124,7 @@ exports.create = async (req, res) => {
     if (status.status === 200) {
         req.body.id = createMovId();
         let unixTime = Date.now();
-        
+
         let modelArr = MovingEquip.destructObj(req.body, unixTime);
 
         let movRow = Moving.destructObj(userId, req.body, unixTime);
@@ -158,7 +158,7 @@ exports.create = async (req, res) => {
                 }
             }
 
-            return res.status(responseDB[0].status).json([{ msg: msg }, rb,{id:req.body.id}]);
+            return res.status(responseDB[0].status).json([{ msg: msg }, rb, { id: req.body.id }]);
         } catch (error) {
             console.log("error:", error);
             return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
@@ -192,22 +192,12 @@ exports.update = async (req, res) => {
         req.body.id = req.params.id;
         let unixTime = Date.now();
 
-        let modelArr = MovingEquip.destructObj(req.body, unixTime);
-        let movRow = Moving.destructObj(userId, req.body, unixTime);
 
-        if (movRow[5] === 3) {
-            modelArr.map(item => {
-                item[3] = 4;
-            })
-        }else if (movRow[5] === 4){
-            modelArr.map(item => {
-                item[3] = 2;
-            })
-        }else {
-            modelArr.map(item => {
-                item[3] = 1;
-            })
-        }
+        let modelArr = MovingEquip.destructModel(req.body, unixTime);
+        let modelArrCal = MovingEquip.destructModelCalendar(req.body, unixTime, userId);
+        let movRow = Moving.destructObj(req.body, unixTime, userId);
+
+        console.log("modelArrCal:", modelArrCal);
 
         let notifyRow = [];
 
@@ -219,7 +209,18 @@ exports.update = async (req, res) => {
         notifyRow.push(unixTime);
 
         try {
-            responseDB = await trans.updateMoving(req.params.id, movRow, modelArr);
+            switch (req.body.status.id) {
+                case 2:
+                    responseDB = await trans.updateMovingRequest(req.params.id, movRow, modelArr, modelArrCal);
+                    break;
+                case 3:
+                    responseDB = await trans.updateMovingShipped(req.params.id, movRow, modelArr, modelArrCal);
+                    break;
+                case 4:
+                    responseDB = await trans.updateMovingReceived(req.params.id, movRow, modelArr, modelArrCal);
+                    break;
+            }
+            
 
             try {
 
@@ -243,51 +244,8 @@ exports.update = async (req, res) => {
             return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
         }
 
-        // if (modelRow.length > 0) {
-        //     try {
-        //         const [newModel] = await MovingEquip.create(modelRow);
-        //         console.log("result modelRow:", newModel);
-        //     } catch (error) {
-        //         console.log("error:", error);
-        //         res.status(500).json({ msg: "We have problems with writing model data to database" });
-        //         return {
-        //             error: true,
-        //             message: 'Error from database'
-        //         }
-        //     }
-        // }
 
-        // let unixTime = movRow[movRow.length - 1];
-        //     let notifyRow = [];
-
-        //     notifyRow.push(userId);
-        //     notifyRow.push("update");
-        //     notifyRow.push("moving");
-        //     notifyRow.push(req.body.id);
-        //     notifyRow.push(req.body.warehouseOut.id);
-        //     notifyRow.push(unixTime);
-
-        //     try {
-
-        //         // write to `t_notifications` table
-        //         const [notification] = await Notification.createNew(notifyRow);
-        //         console.log("result notification:", notification);
-
-        //     } catch (error) {
-        //         console.log("error:", error);
-        //         res.status(500).json({ msg: "We have problems with writing notification to database" });
-        //         return {
-        //             error: true,
-        //             message: 'Error from database'
-        //         }
     }
-
-    //     return res.status(200).json([{ msg: `Перемещение успешно  обновлено. idMoving = ${req.body.id}` }, req.body]);
-
-    // } else {
-    //     res.status(status.status).json({ msg: "We have problems with JWT authentication" });
-    // }
-
 }
 
 exports.delete = async (req, res) => {
