@@ -220,10 +220,11 @@ exports.update = async (req, res) => {
                     responseDB = await trans.updateMovingShipped(req.params.id, movRow, modelArr, modelArrCal);
                     break;
                 case 4:
-                    responseDB = await trans.updateMovingReceived(req.params.id, movRow, modelArr,transferArr);
+                    let query = createQuery(req.body.warehouseOut.id, req.body.warehouseIn.id, transferArr);
+                    responseDB = await trans.updateMovingReceived(req.params.id, movRow, modelArr, query);
                     break;
             }
-            
+
 
             try {
 
@@ -381,20 +382,20 @@ exports.testQuery = async (req, res) => {
     console.log("testQuery");
 
 
-        try {
-            const [result] = await MovingEquip.testTransfer(2,3,'001.001.001');
+    try {
+        const [result] = await MovingEquip.testTransfer(2, 3, '001.001.001');
 
-            console.log("result test:", result);
-            return res.status(200).json({msg:"ok"});
-        } catch (error) {
+        console.log("result test:", result);
+        return res.status(200).json({ msg: "ok" });
+    } catch (error) {
 
-            console.log("error:", error);
-            res.status(500).json({ msg: "We have problems with testQuery" });
-            return {
-                error: true,
-                message: 'Error from database'
-            }
+        console.log("error:", error);
+        res.status(500).json({ msg: "We have problems with testQuery" });
+        return {
+            error: true,
+            message: 'Error from database'
         }
+    }
 
 
 }
@@ -405,3 +406,31 @@ function createMovId() {
     let id = "mov" + utc.slice(0, 11);
     return id;
 }
+
+function createQuery(whOut, whIn, arr) {
+
+    let query = "";
+    let idArr = "WHERE id IN ("
+    let q1 = `UPDATE t_model SET qtt${whOut} = CASE `;
+
+    for (let i = 0; i < arr.length; i++) {
+        q1 += `WHEN id = '${arr[i][0]}' THEN qtt${whOut} - ${arr[i][1]} `;
+        idArr +=`'${arr[i][0]}'`;
+        if (i < arr.length -1) {
+            idArr +=","
+        }
+    }
+
+    let q2 = `qtt${whIn} = CASE `
+
+    for(i = 0;i < arr.length;i++) {
+        q2 += `WHEN id = '${arr[i][0]}' THEN qtt${whIn} + ${arr[i][1]} `;
+    }
+
+    query = q1 + "END , " + q2 + "END " + idArr + ")";
+
+    // console.log(query);
+    return query;
+
+}
+

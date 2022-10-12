@@ -59,11 +59,8 @@ module.exports = class MovingEquip {
         reqbody.model.map(item => {
 
             let row = [];
-
             row.push(item.id);
             row.push(item.qtt);
-            row.push(reqbody.warehouseOut.id);
-            row.push(reqbody.warehouseIn.id);
 
             modelTransferArr.push(row);
         })

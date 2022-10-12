@@ -270,7 +270,7 @@ const updateMovingShipped = (idMoving, movingRow, modelArr, modelArrCal) => {
     })
 }
 
-const updateMovingReceived = (idMoving, movingRow, modelArr, transferArr,whOut,whIn) => {
+const updateMovingReceived = (idMoving, movingRow, modelArr, query) => {
     console.log("updateMoving transaction");
     let msg = "";
 
@@ -345,12 +345,12 @@ const updateMovingReceived = (idMoving, movingRow, modelArr, transferArr,whOut,w
                                         });
                                     }
 
-                                    return connection.query(`UPDATE t_model  SET qtt${whOut} = qtt${whOut} + ?,qtt${whIn} = qtt${whIn} + ? WHERE id = ?`, [transferArr], err => {
+                                    return connection.query(query, err => {
                                         if (err) {
                                             return connection.rollback(() => {
                                                 connection.release();
                                                 console.log("err:", err);
-                                                msg = "Inserting modelArr to `t_mov_equipment` table failed";
+                                                msg = "Inserting transferArr to `t_model` table failed";
                                                 resolve([{ status: 400 }, { msg: msg }]);
                                                 return reject(msg);
                                             });
