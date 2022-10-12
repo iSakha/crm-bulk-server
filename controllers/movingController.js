@@ -197,7 +197,10 @@ exports.update = async (req, res) => {
         let modelArrCal = MovingEquip.destructModelCalendar(req.body, unixTime, userId);
         let movRow = Moving.destructObj(req.body, unixTime, userId);
 
-        console.log("modelArrCal:", modelArrCal);
+        let transferArr = MovingEquip.destructModelTransfer(req.body);
+
+
+        console.log("transferArr:", transferArr);
 
         let notifyRow = [];
 
@@ -217,7 +220,7 @@ exports.update = async (req, res) => {
                     responseDB = await trans.updateMovingShipped(req.params.id, movRow, modelArr, modelArrCal);
                     break;
                 case 4:
-                    responseDB = await trans.updateMovingReceived(req.params.id, movRow, modelArr, modelArrCal);
+                    responseDB = await trans.updateMovingReceived(req.params.id, movRow, modelArr,transferArr);
                     break;
             }
             
@@ -371,6 +374,29 @@ exports.getStatus = async (req, res) => {
     } else {
         res.status(status.status).json({ msg: "We have problems with JWT authentication" });
     }
+}
+
+exports.testQuery = async (req, res) => {
+
+    console.log("testQuery");
+
+
+        try {
+            const [result] = await MovingEquip.testTransfer(2,3,'001.001.001');
+
+            console.log("result test:", result);
+            return res.status(200).json({msg:"ok"});
+        } catch (error) {
+
+            console.log("error:", error);
+            res.status(500).json({ msg: "We have problems with testQuery" });
+            return {
+                error: true,
+                message: 'Error from database'
+            }
+        }
+
+
 }
 
 function createMovId() {

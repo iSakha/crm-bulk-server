@@ -53,6 +53,25 @@ module.exports = class MovingEquip {
 
     }
 
+    static destructModelTransfer(reqbody) {
+
+        let modelTransferArr = [];
+        reqbody.model.map(item => {
+
+            let row = [];
+
+            row.push(item.id);
+            row.push(item.qtt);
+            row.push(reqbody.warehouseOut.id);
+            row.push(reqbody.warehouseIn.id);
+
+            modelTransferArr.push(row);
+        })
+
+        return modelTransferArr;
+
+    }
+
     static getAll() {
         try {
             return db.query('SELECT * FROM `v_mov_equipment`');
@@ -70,22 +89,12 @@ module.exports = class MovingEquip {
         }
     }
 
-    // static create(modelRow) {
-    //     console.log("create_mod modelRow", modelRow);
-    //     try {
-    //         return db.query('INSERT INTO `t_mov_equipment` (idMoving, idModel, qtt) VALUES ?', [modelRow]);
-    //     } catch (error) {
-    //         return error;
-    //     }
-    // }
-
-    // static markMovingDel(id) {
-    //     try {
-    //         return db.query('UPDATE t_mov_equipment SET is_deleted=1 WHERE idMoving=?', [id]);
-
-    //     } catch (error) {
-    //         return error;
-    //     }
-    // }
-
+    static testTransfer(wh2,wh3,idModel) {
+        try {
+            return db.query(`UPDATE t_model  SET qtt${wh2} = qtt${wh2} + ?,qtt${wh3} = qtt${wh3} + ? WHERE id = ?`,[1,-1,idModel]);
+        } catch (error) {
+            return error;
+        }
+    }
 }
+

@@ -74,6 +74,90 @@ const createMoving = (movingRow, modelArr) => {
 
 }
 
+const updateMovingRequest = (idMoving, movingRow, modelArr) => {
+    console.log("updateMoving transaction");
+    let msg = "";
+
+    return new Promise((resolve, reject) => {
+        pool.getConnection((err, connection) => {
+            if (err) {
+                msg = "Error occurred while getting the connection";
+                console.log("err:", err)
+                resolve([{ status: 400 }, { msg: msg }]);
+                return reject(msg);
+            }
+            return connection.beginTransaction(err => {
+                if (err) {
+                    msg = "Error occurred while creating the transaction";
+                    console.log("err:", err)
+                    resolve([{ status: 400 }, { msg: msg }]);
+                    return reject(msg);
+                }
+                return connection.execute('UPDATE `t_movings` SET `t_movings`.`is_deleted` = 1 WHERE `t_movings`.`id`=?', [idMoving], err => {
+                    if (err) {
+                        return connection.rollback(() => {
+                            connection.release();
+                            console.log("err:", err);
+                            msg = "Mark eventRow as deleted in `t_movings` table failed";
+                            resolve([{ status: 400 }, { msg: msg }]);
+                            return reject(msg);
+                        });
+                    }
+
+                    return connection.execute('UPDATE `t_mov_equipment` SET `t_mov_equipment`.`is_deleted` = 1 WHERE `t_mov_equipment`.`idMoving`=?', [idMoving], err => {
+                        if (err) {
+                            return connection.rollback(() => {
+                                connection.release();
+                                console.log("err:", err);
+                                msg = "Mark eventRow as deleted in `t_mov_equipment` table failed";
+                                resolve([{ status: 400 }, { msg: msg }]);
+                                return reject(msg);
+                            });
+                        };
+
+                        return connection.execute('INSERT INTO `t_movings` (`id`, `idWhOut`, `idWhIn`, `dateOut`, `dateIn`, `idStatus`, `notes`, `idUser`, `unixTime`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', movingRow, err => {
+                            if (err) {
+                                return connection.rollback(() => {
+                                    connection.release();
+                                    console.log("err:", err);
+                                    msg = "Inserting movingRow to `t_movings` table failed";
+                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    return reject(msg);
+                                });
+                            }
+                            return connection.query('INSERT INTO `t_mov_equipment` (idMoving, idModel, qtt, model_mov_status, unixTime) VALUES ?', [modelArr], err => {
+                                if (err) {
+                                    return connection.rollback(() => {
+                                        connection.release();
+                                        console.log("err:", err);
+                                        msg = "Inserting modelArr to `t_mov_equipment` table failed";
+                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        return reject(msg);
+                                    });
+                                }
+                                return connection.commit(err => {
+                                    if (err) {
+                                        return connection.rollback(() => {
+                                            connection.release();
+                                            console.log("err:", err);
+                                            msg = "Commit failed";
+                                            resolve([{ status: 400 }, { msg: msg }]);
+                                            return reject(msg);
+                                        });
+                                    }
+                                    msg = "Success!Updated Moving"
+                                    connection.release();
+                                    resolve([{ status: 200 }, { msg: msg }]);
+                                })
+                            })
+                        })
+                    })
+                })
+            })
+        })
+    })
+}
+
 const updateMovingShipped = (idMoving, movingRow, modelArr, modelArrCal) => {
     console.log("updateMoving transaction");
     let msg = "";
@@ -186,7 +270,7 @@ const updateMovingShipped = (idMoving, movingRow, modelArr, modelArrCal) => {
     })
 }
 
-const updateMovingRequest = (idMoving, movingRow, modelArr) => {
+const updateMovingReceived = (idMoving, movingRow, modelArr, transferArr,whOut,whIn) => {
     console.log("updateMoving transaction");
     let msg = "";
 
@@ -227,39 +311,67 @@ const updateMovingRequest = (idMoving, movingRow, modelArr) => {
                             });
                         };
 
-                        return connection.execute('INSERT INTO `t_movings` (`id`, `idWhOut`, `idWhIn`, `dateOut`, `dateIn`, `idStatus`, `notes`, `idUser`, `unixTime`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', movingRow, err => {
+                        return connection.execute('UPDATE `t_mov_model_cal_trans` SET `t_mov_model_cal_trans`.`is_deleted` = 1 WHERE `t_mov_model_cal_trans`.`idMoving`=?', [idMoving], err => {
                             if (err) {
                                 return connection.rollback(() => {
                                     connection.release();
                                     console.log("err:", err);
-                                    msg = "Inserting movingRow to `t_movings` table failed";
+                                    msg = "Mark eventRow as deleted in `t_mov_model_cal_trans` table failed";
                                     resolve([{ status: 400 }, { msg: msg }]);
                                     return reject(msg);
                                 });
-                            }
-                            return connection.query('INSERT INTO `t_mov_equipment` (idMoving, idModel, qtt, model_mov_status, unixTime) VALUES ?', [modelArr], err => {
+                            };
+
+
+                            return connection.execute('INSERT INTO `t_movings` (`id`, `idWhOut`, `idWhIn`, `dateOut`, `dateIn`, `idStatus`, `notes`, `idUser`, `unixTime`) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', movingRow, err => {
                                 if (err) {
                                     return connection.rollback(() => {
                                         connection.release();
                                         console.log("err:", err);
-                                        msg = "Inserting modelArr to `t_mov_equipment` table failed";
+                                        msg = "Inserting movingRow to `t_movings` table failed";
                                         resolve([{ status: 400 }, { msg: msg }]);
                                         return reject(msg);
                                     });
                                 }
-                                return connection.commit(err => {
+
+                                return connection.query('INSERT INTO `t_mov_equipment` (idMoving, idModel, qtt, model_mov_status, unixTime) VALUES ?', [modelArr], err => {
                                     if (err) {
                                         return connection.rollback(() => {
                                             connection.release();
                                             console.log("err:", err);
-                                            msg = "Commit failed";
+                                            msg = "Inserting modelArr to `t_mov_equipment` table failed";
                                             resolve([{ status: 400 }, { msg: msg }]);
                                             return reject(msg);
                                         });
                                     }
-                                    msg = "Success!Updated Moving"
-                                    connection.release();
-                                    resolve([{ status: 200 }, { msg: msg }]);
+
+                                    return connection.query(`UPDATE t_model  SET qtt${whOut} = qtt${whOut} + ?,qtt${whIn} = qtt${whIn} + ? WHERE id = ?`, [transferArr], err => {
+                                        if (err) {
+                                            return connection.rollback(() => {
+                                                connection.release();
+                                                console.log("err:", err);
+                                                msg = "Inserting modelArr to `t_mov_equipment` table failed";
+                                                resolve([{ status: 400 }, { msg: msg }]);
+                                                return reject(msg);
+                                            });
+                                        }
+
+
+                                        return connection.commit(err => {
+                                            if (err) {
+                                                return connection.rollback(() => {
+                                                    connection.release();
+                                                    console.log("err:", err);
+                                                    msg = "Commit failed";
+                                                    resolve([{ status: 400 }, { msg: msg }]);
+                                                    return reject(msg);
+                                                });
+                                            }
+                                            msg = "Success!Updated Moving"
+                                            connection.release();
+                                            resolve([{ status: 200 }, { msg: msg }]);
+                                        })
+                                    })
                                 })
                             })
                         })
@@ -343,8 +455,11 @@ const deleteMoving = (idMoving, movingRow) => {
 }
 
 module.exports = {
+    
     createMoving: createMoving,
-    updateMovingRequest:updateMovingRequest,
+    updateMovingRequest: updateMovingRequest,
     updateMovingShipped: updateMovingShipped,
+    updateMovingReceived:updateMovingReceived,
     deleteMoving: deleteMoving
+    
 }
