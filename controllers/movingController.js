@@ -125,9 +125,9 @@ exports.create = async (req, res) => {
         req.body.id = createMovId();
         let unixTime = Date.now();
 
-        let modelArr = MovingEquip.destructObj(req.body, unixTime);
+        let modelArr = MovingEquip.destructModel(req.body, unixTime);
 
-        let movRow = Moving.destructObj(userId, req.body, unixTime);
+        let movRow = Moving.destructObj(req.body, unixTime, userId);
 
         let notifyRow = [];
 
@@ -415,15 +415,15 @@ function createQuery(whOut, whIn, arr) {
 
     for (let i = 0; i < arr.length; i++) {
         q1 += `WHEN id = '${arr[i][0]}' THEN qtt${whOut} - ${arr[i][1]} `;
-        idArr +=`'${arr[i][0]}'`;
-        if (i < arr.length -1) {
-            idArr +=","
+        idArr += `'${arr[i][0]}'`;
+        if (i < arr.length - 1) {
+            idArr += ","
         }
     }
 
     let q2 = `qtt${whIn} = CASE `
 
-    for(i = 0;i < arr.length;i++) {
+    for (i = 0; i < arr.length; i++) {
         q2 += `WHEN id = '${arr[i][0]}' THEN qtt${whIn} + ${arr[i][1]} `;
     }
 
