@@ -74,4 +74,12 @@ module.exports = class BookCalendarEquip {
 
     }
 
+    static getAllIdModels() {
+        try {
+            return db.query('SELECT `id` FROM `t_model`' );
+        } catch (error) {
+            return error;
+        }
+    }
+
 }

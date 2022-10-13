@@ -122,6 +122,7 @@ exports.create = async (req, res) => {
     let msg;
 
     if (status.status === 200) {
+
         req.body.id = createMovId();
         let unixTime = Date.now();
 
@@ -168,13 +169,6 @@ exports.create = async (req, res) => {
 
 
     }
-
-    // return res.status(200).json([{ msg: `Перемещение успешно создано. idMoving = ${req.body.id}` }, req.body]);
-    // return res.status(200).json([{ msg: `Перемещение успешно создано. idMoving = ${req.body.id}` }, req.body]);
-
-    // } else {
-    //     res.status(status.status).json({ msg: "We have problems with JWT authentication" });
-    // }
 
 }
 

@@ -135,13 +135,16 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
 
         try {
 
+            let [allModels] = await BookCalendarEquip.getAllIdModels();
+            console.log("allModels:",allModels);
             const [models] = await BookCalendarEquip.getModelsByCatWhPeriod(req.query.cat, req.query.wh, start, end);
-
+            console.log("models:",models);
             const row = [];
             const map = new Map();
             for (const item of models) {
                 if (!map.has(item.idModel)) {
                     map.set(item.idModel, true);
+                    allModels = allModels.filter( obj => obj.id !== item.idModel);
                     row.push({
                         idModel: item.idModel,
                         manufactor: item.manufactor,
@@ -151,7 +154,7 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
                     });
                 }
             }
-
+            console.log("allModels:",allModels);
             row.map(item => {
                 let dateArr = [];
                 let dateObj = {};
@@ -165,7 +168,7 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
                     }
                 });
 
-                console.log("date:", date);
+                // console.log("date:", date);
 
                 date.map(el => {
                     dateObj = {};
@@ -177,18 +180,18 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
                     dateObj.availApproved = el.availApproved;
                     dateObj.availQuest = el.availQuest;
 
-                    console.log("dateObj:", dateObj);
+                    // console.log("dateObj:", dateObj);
 
                     dateArr.push(dateObj);
 
                 });
 
-                console.log("dateArr:", dateArr);
+                // console.log("dateArr:", dateArr);
 
                 model.bookDate = dateArr;
 
                 // console.log("dateArr:", dateArr);
-                console.log(model);
+                // console.log(model);
                 modelsArr.push(model);
 
             })
