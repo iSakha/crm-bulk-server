@@ -49,7 +49,7 @@ module.exports = class EquipModel {
         this.quantity.onWarehouse[2].qtyBroken = parseInt(row.qttKazanBrokenSN) + parseInt(row.qttKazanBrokenBulk);
 
         this.quantity.onWarehouse[3] = {};
-        this.quantity.onWarehouse[3].id = 2;
+        this.quantity.onWarehouse[3].id = 5;
         this.quantity.onWarehouse[3].name = "Питер";
         this.quantity.onWarehouse[3].qttWork = row.qttPiterWork;
         this.quantity.onWarehouse[3].qtyBroken = parseInt(row.qttPiterBrokenSN) + parseInt(row.qttPiterBrokenBulk);

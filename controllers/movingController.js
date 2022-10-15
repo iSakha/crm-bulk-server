@@ -126,7 +126,10 @@ exports.create = async (req, res) => {
         req.body.id = createMovId();
         let unixTime = Date.now();
 
-        let modelArr = MovingEquip.destructModel(req.body, unixTime);
+        let modelArr = await MovingEquip.destructModel(req.body, unixTime);
+
+        // let modelArrIdModel = req.body.model.map(item => item.id);
+        // console.log("modelArrIdModel:",modelArrIdModel);
 
         let movRow = Moving.destructObj(req.body, unixTime, userId);
 
@@ -140,6 +143,9 @@ exports.create = async (req, res) => {
         notifyRow.push(unixTime);
 
         try {
+
+            let [whQtt] = await Moving.checkMovEquipQtt(modelArrIdModel);
+
             responseDB = await trans.createMoving(movRow, modelArr);
 
             msg = `Перемещение успешно создано. idEvent = ${req.body.id}`

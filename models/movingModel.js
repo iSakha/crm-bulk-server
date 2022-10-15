@@ -76,5 +76,15 @@ module.exports = class Moving {
         }
     }
 
-
+static checkMovEquipQtt(whOut,arrIdModel) {
+let query = "";
+// switch (whOut) {
+//     case 2:
+//         query = "SELECT `qtt2` FROM `t_model1` WHERE `id` IN (?)";  
+//         break;
+//     case 3:
+//     case 4:
+//     case 5:
+// }
+}
 }

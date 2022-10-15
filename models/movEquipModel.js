@@ -10,7 +10,7 @@ module.exports = class MovingEquip {
         this.qtt = row.qtt;
     }
 
-    static destructModel(reqbody, unixTime) {
+    static async destructModel(reqbody, unixTime) {
 
         let modelArr = [];
         reqbody.model.map(item => {
