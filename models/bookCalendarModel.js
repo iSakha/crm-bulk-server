@@ -75,26 +75,33 @@ module.exports = class BookCalendarEquip {
     }
 
     static getAllModelsByCat(idCat, idWh) {
+        console.log('getAllModelsByCat_mod');
         let query = "";
         switch (idWh) {
             case '2':
+                console.log('case 2');
                 query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyMinsk` as currentWh FROM `v_model` WHERE `idCat`=?"
                 break;
             case '3':
+                console.log('case 3');
                 query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyMoscow` as currentWh FROM `v_model` WHERE `idCat`=?"
                 break;
             case '4':
+                console.log('case 4');
                 query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyKazan` as currentWh FROM `v_model` WHERE `idCat`=?"
                 break;
             case '5':
+                console.log('case 5');
                 query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyPiter` as currentWh FROM `v_model` WHERE `idCat`=?"
                 break;
             default:
+                console.log('default');
                 query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyAll` as currentWh FROM `v_model` WHERE `idCat`=?"
                 break;
         }
 
         try {
+            console.log("query:",query);
             return db.query(query, [idCat]);
         } catch (error) {
             return error;
