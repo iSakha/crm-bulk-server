@@ -119,6 +119,7 @@ exports.getAll = async (req, res) => {
 
 exports.getModelsByCatWhPeriod = async (req, res) => {
     let modelsArr = [];
+    let filteredAllModels = [];
     console.log("getModelsByCatWhPeriod");
     console.log("idCat:", req.query.cat);
     console.log("idWh:", req.query.wh);
@@ -135,30 +136,60 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
 
         try {
 
-            let [allModels] = await BookCalendarEquip.getAllIdModels();
-            console.log("allModels:",allModels);
+            let [allModels] = await BookCalendarEquip.getAllModelsByCat(req.query.cat);
+            // console.log("allModels:",allModels);
             const [models] = await BookCalendarEquip.getModelsByCatWhPeriod(req.query.cat, req.query.wh, start, end);
-            console.log("models:",models);
+            console.log("models:", models);
             const row = [];
             const map = new Map();
+            let arr = [];
             for (const item of models) {
+
                 if (!map.has(item.idModel)) {
                     map.set(item.idModel, true);
-                    allModels = allModels.filter( obj => obj.id !== item.idModel);
+
+                    allModels.filter(obj => {
+
+                        if (obj.idModel === item.idModel) {
+                            // console.log("obj.idModel:", obj.idModel);
+                            arr.push(obj.idModel);
+
+                            return true;
+                        }
+
+
+                    });  //  remove from allModels    
+
+
+
+
                     row.push({
                         idModel: item.idModel,
                         manufactor: item.manufactor,
                         name: item.name,
-                        all: item.all,
+                        qtyAll: item.qtyAll,
                         currentWh: item.currentWh
                     });
                 }
             }
-            console.log("allModels:",allModels);
+
+            console.log("arr:", arr);
+            console.log("arrLength:", arr.length);
+            console.log("allModels:", allModels);
+            console.log("allModelsLength:", allModels.length);
+            filteredAllModels = [];
+            allModels.forEach(element => {
+                if (!arr.includes(element.idModel)) {
+                    filteredAllModels.push(element);
+                }
+            })
+            console.log("filteredAllModels:", filteredAllModels);
+            // console.log("models:", models);
+
             row.map(item => {
                 let dateArr = [];
                 let dateObj = {};
-
+                // console.log("item:", item);
                 let model = new BookCalendarEquip(item);
                 // console.log("book model:", model);
 
@@ -195,7 +226,13 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
                 modelsArr.push(model);
 
             })
-            
+
+            filteredAllModels.map(item => {
+                let modelNoBook = new BookCalendarEquip(item);
+                modelNoBook.bookDate = [];
+                modelsArr.push(modelNoBook);
+            })
+
             return res.status(200).json(modelsArr);
 
         } catch (error) {

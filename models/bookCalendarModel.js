@@ -12,9 +12,9 @@ module.exports = class BookCalendarEquip {
         // console.log("row.idModel:",row.idModel);
         this.category.id = item.idModel.slice(0, 7);
         this.quantity = {};
-        this.quantity.all = item.all;
+        this.quantity.all = item.qtyAll;
         this.quantity.currentWarehouse = item.currentWh;
-        this.quantity.otherWarehouse = parseInt(item.all) - parseInt(item.currentWh);
+        this.quantity.otherWarehouse = parseInt(item.qtyAll) - parseInt(item.currentWh);
         this.quantity.currentRepair = 42;
 
     }
@@ -67,16 +67,35 @@ module.exports = class BookCalendarEquip {
         }
 
         try {
-            return db.query(query + 'AND `day` >= ? AND `day` <= ?',[start, end]);
+            return db.query(query + 'AND `day` >= ? AND `day` <= ?', [start, end]);
         } catch (error) {
             return error;
         }
 
     }
 
-    static getAllIdModels() {
+    static getAllModelsByCat(idCat, idWh) {
+        let query = "";
+        switch (idWh) {
+            case '2':
+                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyMinsk` as currentWh FROM `v_model` WHERE `idCat`=?"
+                break;
+            case '3':
+                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyMoscow` as currentWh FROM `v_model` WHERE `idCat`=?"
+                break;
+            case '4':
+                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyKazan` as currentWh FROM `v_model` WHERE `idCat`=?"
+                break;
+            case '5':
+                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyPiter` as currentWh FROM `v_model` WHERE `idCat`=?"
+                break;
+            default:
+                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyAll` as currentWh FROM `v_model` WHERE `idCat`=?"
+                break;
+        }
+
         try {
-            return db.query('SELECT `id` FROM `t_model`' );
+            return db.query(query, [idCat]);
         } catch (error) {
             return error;
         }
