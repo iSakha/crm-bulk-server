@@ -76,15 +76,28 @@ module.exports = class Moving {
         }
     }
 
-static checkMovEquipQtt(whOut,arrIdModel) {
-let query = "";
-// switch (whOut) {
-//     case 2:
-//         query = "SELECT `qtt2` FROM `t_model1` WHERE `id` IN (?)";  
-//         break;
-//     case 3:
-//     case 4:
-//     case 5:
-// }
-}
+    static checkMovEquipQtt(whOut, arrIdModel) {
+        console.log('checkMovEquipQtt_mod whOut, arrIdModel:', whOut, arrIdModel);
+        let query = "";
+        switch (whOut) {
+            case 2:
+                query = "SELECT `qtt2` FROM `t_model` WHERE `id` IN (?)";
+                break;
+            case 3:
+                query = "SELECT `qtt3` FROM `t_model` WHERE `id` IN (?)";
+                break;
+            case 4:
+                query = "SELECT `qtt4` FROM `t_model` WHERE `id` IN (?)";
+                break;
+            case 5:
+                query = "SELECT `qtt5` FROM `t_model` WHERE `id` IN (?)";
+                break;
+        }
+
+        try {
+            return db.query(query , [arrIdModel]);
+        } catch (error) {
+            return error;
+        }
+    }
 }

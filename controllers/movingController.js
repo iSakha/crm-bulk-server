@@ -128,8 +128,8 @@ exports.create = async (req, res) => {
 
         let modelArr = await MovingEquip.destructModel(req.body, unixTime);
 
-        // let modelArrIdModel = req.body.model.map(item => item.id);
-        // console.log("modelArrIdModel:",modelArrIdModel);
+        let modelArrIdModel = req.body.model.map(item => item.id);
+        console.log("modelArrIdModel:", modelArrIdModel);
 
         let movRow = Moving.destructObj(req.body, unixTime, userId);
 
@@ -144,7 +144,34 @@ exports.create = async (req, res) => {
 
         try {
 
-            let [whQtt] = await Moving.checkMovEquipQtt(modelArrIdModel);
+            let [whQttArr] = await Moving.checkMovEquipQtt(req.body.warehouseOut.id, modelArrIdModel);
+            console.log("whQttArr:", whQttArr);
+
+            for (let i = 0; i < whQttArr.length; i++) {
+                switch (req.body.warehouseOut.id) {
+                    case 2:
+                        if(whQttArr[i].qtt2 < req.body.model[i].qtt) {
+                            return res.status(200).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                        }
+                        break;
+                    case 3:
+                        if(whQttArr[i].qtt3 < req.body.model[i].qtt) {
+                            return res.status(200).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                        }
+                        break;
+                    case 4:
+                        if(whQttArr[i].qtt4 < req.body.model[i].qtt) {
+                            return res.status(200).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                        }
+                        break;
+                    case 5:
+                        if(whQttArr[i].qtt5 < req.body.model[i].qtt) {
+                            return res.status(200).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                        }
+                        break;
+                }
+
+            }
 
             responseDB = await trans.createMoving(movRow, modelArr);
 
