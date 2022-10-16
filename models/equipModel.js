@@ -33,24 +33,28 @@ module.exports = class EquipModel {
         this.quantity.onWarehouse[0] = {};
         this.quantity.onWarehouse[0].id = 2;
         this.quantity.onWarehouse[0].name = "Минск";
+        this.quantity.onWarehouse[0].qtt = row.qtyMinsk;
         this.quantity.onWarehouse[0].qttWork = row.qttMinskWork;
         this.quantity.onWarehouse[0].qtyBroken = parseInt(row.qttMinskBrokenSN) + parseInt(row.qttMinskBrokenBulk);
 
         this.quantity.onWarehouse[1] = {};
         this.quantity.onWarehouse[1].id = 3;
         this.quantity.onWarehouse[1].name = "Москва";
+        this.quantity.onWarehouse[1].qtt = row.qtyMoscow;
         this.quantity.onWarehouse[1].qttWork = row.qttMoscowWork;
         this.quantity.onWarehouse[1].qtyBroken = parseInt(row.qttMoscowBrokenSN) + parseInt(row.qttMoscowBrokenBulk);
 
         this.quantity.onWarehouse[2] = {};
         this.quantity.onWarehouse[2].id = 4;
         this.quantity.onWarehouse[2].name = "Казань";
+        this.quantity.onWarehouse[2].qtt = row.qtyKazan;
         this.quantity.onWarehouse[2].qttWork = row.qttKazanWork;
         this.quantity.onWarehouse[2].qtyBroken = parseInt(row.qttKazanBrokenSN) + parseInt(row.qttKazanBrokenBulk);
 
         this.quantity.onWarehouse[3] = {};
         this.quantity.onWarehouse[3].id = 5;
         this.quantity.onWarehouse[3].name = "Питер";
+        this.quantity.onWarehouse[3].qtt = row.qtyPiter;
         this.quantity.onWarehouse[3].qttWork = row.qttPiterWork;
         this.quantity.onWarehouse[3].qtyBroken = parseInt(row.qttPiterBrokenSN) + parseInt(row.qttPiterBrokenBulk);
 

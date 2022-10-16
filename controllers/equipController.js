@@ -58,14 +58,17 @@ exports.getModelsByCat = async (req, res) => {
 
         try {
             [equip] = await EquipModel.getModelsByCat(req.params.idCat);
-            console.log("equip:", equip);
+            // console.log("equip:", equip);
             equip.map(item => {
+                console.log("item:", item);
                 let model = new EquipModel(item);
+                console.log("model.onWarehouse:", model.quantity.onWarehouse);
                 modelArr.push(model);
-            } )
+            } );
+            // console.log("modelArr:", modelArr);
             return res.status(200).json(modelArr);
         } catch (error) {
-            console.log("error:", error);
+            // console.log("error:", error);
             return res.status(500).json({ msg: "We have problems with getting equipment by dep and cat from database" });
         }
 

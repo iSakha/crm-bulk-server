@@ -105,56 +105,6 @@ exports.getAll = async (req, res) => {
 
 
 
-        // try {
-        //     [equip] = await BookedEquip.bookedGetAllModels();
-        //     console.log("booked equip:", equip);
-        // } catch (error) {
-        //     console.log("error:", error);
-        //     res.status(500).json({ msg: "We have problems with getting phase data from database" });
-        //     return {
-        //         error: true,
-        //         message: 'Error from database'
-        //     }
-        // }
-
-        // for (let i = 0; i < allEvents.length; i++) {
-
-        //     console.log("==================================================================");
-        //     console.log("allEvents.length:", allEvents.length);
-
-
-        //     let eventObj = new Event(allEvents[i].idEvent, allEvents[i]);
-
-        //     let foundPhase = phases.filter(e => e.idEvent === allEvents[i].idEvent);
-        //     console.log("foundPhase:", i, foundPhase);
-
-        //     foundPhase = foundPhase.map(item => {
-        //         return item = new Phase(item);
-        //     });
-
-        //     if (foundPhase.length > 0) {
-        //         eventObj.phase = foundPhase;
-        //     } else eventObj.phase = [];
-
-
-        //     let foundEquip = equip.filter(e => e.idEvent === allEvents[i].idEvent);
-        //     console.log("foundEquip:", i, foundEquip);
-        //     foundEquip = foundEquip.map(item => {
-        //         console.log("item:", item)
-        //         return item = new BookedEquip(item, 1);
-        //     });
-
-        //     if (foundEquip.length > 0) {
-        //         eventObj.booking = foundEquip;
-        //     } else eventObj.booking = [];
-
-        //     allEventsArr.push(eventObj);
-        // }
-        // console.log("==================================================================");
-        // console.log("allEventsArr:", allEventsArr);
-
-
-
     } else {
         return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
     }
@@ -305,6 +255,7 @@ exports.createTrans = async (req, res) => {
         console.log("authentication successfull!");
 
         req.body.id = createEventId();
+        rb.id = req.body.id;
         req.body.creator = {};
         req.body.creator.id = userId;
         req.body.unixTime = unixTime;

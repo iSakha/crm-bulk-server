@@ -124,6 +124,7 @@ exports.create = async (req, res) => {
     if (status.status === 200) {
 
         req.body.id = createMovId();
+        rb.id = req.body.id;
         let unixTime = Date.now();
 
         let modelArr = await MovingEquip.destructModel(req.body, unixTime);
@@ -175,7 +176,7 @@ exports.create = async (req, res) => {
 
             responseDB = await trans.createMoving(movRow, modelArr);
 
-            msg = `Перемещение успешно создано. idEvent = ${req.body.id}`
+            msg = `Перемещение успешно создано. id = ${req.body.id}`
 
             try {
 
@@ -192,7 +193,7 @@ exports.create = async (req, res) => {
                 }
             }
 
-            return res.status(responseDB[0].status).json([{ msg: msg }, rb, { id: req.body.id }]);
+            return res.status(responseDB[0].status).json([{ msg: msg }, rb]);
         } catch (error) {
             console.log("error:", error);
             return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
