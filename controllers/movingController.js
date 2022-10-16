@@ -221,7 +221,7 @@ exports.update = async (req, res) => {
         let unixTime = Date.now();
 
 
-        let modelArr = MovingEquip.destructModel(req.body, unixTime);
+        let modelArr = await MovingEquip.destructModel(req.body, unixTime);
         let modelArrCal = MovingEquip.destructModelCalendar(req.body, unixTime, userId);
         let movRow = Moving.destructObj(req.body, unixTime, userId);
 
@@ -229,6 +229,7 @@ exports.update = async (req, res) => {
 
 
         console.log("transferArr:", transferArr);
+        console.log("modelArr:",modelArr);
 
         let notifyRow = [];
 
@@ -242,12 +243,15 @@ exports.update = async (req, res) => {
         try {
             switch (req.body.status.id) {
                 case 2:
+                    console.log("case 2:");
                     responseDB = await trans.updateMovingRequest(req.params.id, movRow, modelArr, modelArrCal);
                     break;
                 case 3:
+                    console.log("case 3:");
                     responseDB = await trans.updateMovingShipped(req.params.id, movRow, modelArr, modelArrCal);
                     break;
                 case 4:
+                    console.log("case 4:");
                     let query = createQuery(req.body.warehouseOut.id, req.body.warehouseIn.id, transferArr);
                     responseDB = await trans.updateMovingReceived(req.params.id, movRow, modelArr, query);
                     break;
