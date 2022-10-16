@@ -75,7 +75,7 @@ module.exports = class BookCalendarEquip {
     }
 
     static getAllModelsByCat(idCat, idWh) {
-        console.log('getAllModelsByCat_mod');
+        // console.log('getAllModelsByCat_mod');
         let query = "";
         switch (idWh) {
             case '2':

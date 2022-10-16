@@ -148,14 +148,14 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
                 if (!map.has(item.idModel)) {
                     map.set(item.idModel, true);
 
-                    // allModels.filter(obj => {
+                    allModels.filter(obj => {
 
-                    //     if (obj.idModel === item.idModel) {
-                    //         // console.log("obj.idModel:", obj.idModel);
-                    //         arr.push(obj.idModel);
-                    //         return true;
-                    //     }
-                    // });  //  remove from allModels    
+                        if (obj.idModel === item.idModel) {
+                            // console.log("obj.idModel:", obj.idModel);
+                            arr.push(obj.idModel);
+                            return true;
+                        }
+                    });  //  remove from allModels    
 
                     row.push({
                         idModel: item.idModel,
@@ -167,13 +167,15 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
                 }
             }
 
-            // console.log("arr:", arr);
+            console.log("arr:", arr);
             // console.log("arrLength:", arr.length);
             // console.log("allModels:", allModels);
             // console.log("allModelsLength:", allModels.length);
 
             filteredAllModels = [];
+
             allModels.forEach(element => {
+                
                 if (!arr.includes(element.idModel)) {
                     filteredAllModels.push(element);
                 }
@@ -225,6 +227,7 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
 
             filteredAllModels.map(item => {
                 let modelNoBook = new BookCalendarEquip(item);
+                // console.log("modelNoBook:",modelNoBook);
                 modelNoBook.bookDate = [];
                 modelsArr.push(modelNoBook);
             })
