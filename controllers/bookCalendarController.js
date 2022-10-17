@@ -79,24 +79,6 @@ exports.getAll = async (req, res) => {
 
             })
 
-
-            // let date = models.filter(elem => {
-            //     if(elem.idModel === item.idModel) {
-            //         return true;
-            //     }
-            // });
-            // console.log("date:",date);
-
-            // date.map(el => {
-            //     el.day
-            // });
-            // model.bookDate = date;
-            // console.log("book model:", model);
-
-
-
-
-
             // return res.status(200).json({ msg: "ok" });
             return res.status(200).json(modelsArr);
 
@@ -250,4 +232,5 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
     // return res.status(200).json({ msg: "ok" });
 
 }
+
 
