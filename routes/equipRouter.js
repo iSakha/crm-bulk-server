@@ -18,4 +18,8 @@ router.get('/cats/:idCat', equipController.getModelsByCat);
 // =====================================================================
 router.get('/cats', equipController.getCategories);
 
+// Get models by id array
+// =====================================================================
+router.post('/models', equipController.getModels);
+
 module.exports = router;

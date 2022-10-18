@@ -64,7 +64,7 @@ exports.getModelsByCat = async (req, res) => {
                 let model = new EquipModel(item);
                 console.log("model.onWarehouse:", model.quantity.onWarehouse);
                 modelArr.push(model);
-            } );
+            });
             // console.log("modelArr:", modelArr);
             return res.status(200).json(modelArr);
         } catch (error) {
@@ -98,4 +98,53 @@ exports.getCategories = async (req, res) => {
         return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
     }
 
+}
+
+exports.getModels = async (req, res) => {
+
+    console.log("getModels");
+    let status = await auth.authenticateJWT(req, res);
+    console.log("statusCode:", status);
+    let q = "";
+    modelArr = [];
+
+    console.log("req.body:", req.body);
+
+    let arr = req.body.map(item => item.id);
+    console.log("arr:", arr);
+
+    arr.map(item => {
+        q += "'" + item + "'" + ",";
+    });
+    q = q.slice(0, -1);
+    q = "(" + q + ")";
+
+    console.log("q:", q);
+
+    // console.log(typeof (q));
+    // console.log(typeof (arr));
+
+    if (status.status === 200) {
+
+        try {
+            [equip] = await EquipModel.getModels(q);
+            console.log("equip:", equip);
+            equip.map(item => {
+                // console.log("item:", item);
+                let model = new EquipModel(item);
+                // console.log("model.onWarehouse:", model.quantity.onWarehouse);
+                modelArr.push(model);
+            });
+            // console.log("modelArr:", modelArr);
+            return res.status(200).json(modelArr);
+        } catch (error) {
+            // console.log("error:", error);
+            return res.status(500).json({ msg: "We have problems with getting models from database" });
+        }
+
+    } else {
+        return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
+    }
+
+    // res.status(200).json({msg:"ok"});
 }

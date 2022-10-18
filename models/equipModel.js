@@ -95,5 +95,14 @@ module.exports = class EquipModel {
             return error;
         }
     }
+
+    static getModels(q) {
+        console.log("getModelById idArr:", q);
+        try {
+            return db.query(`SELECT * FROM v_model WHERE id IN ${q} ORDER BY id`);
+        } catch (error) {
+            return error;
+        }
+    }
     
 }
