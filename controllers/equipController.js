@@ -113,9 +113,10 @@ exports.getModels = async (req, res) => {
     let arr = req.body.map(item => item.id);
     console.log("arr:", arr);
 
-    arr.map(item => {
-        q += "'" + item + "'" + ",";
-    });
+    q = arr.reduce((accumulator, curVal) => {
+        return  accumulator + "'" + curVal + "',";
+      },'');
+
     q = q.slice(0, -1);
     q = "(" + q + ")";
 
