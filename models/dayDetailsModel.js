@@ -32,11 +32,25 @@ module.exports = class DayDetails {
 
     static getDayDetails(idModel, idWh, date) {
         console.log('getDayDetails: idModel, idWh, date', idModel, idWh, date);
-        try {
-            return db.query('SELECT * FROM `v_day_details` WHERE `idModel`=? AND `idWh`=? AND `date`=?', [idModel, idWh, date]);
-        } catch (error) {
-            return error;
+        let query = '';
+        switch (idWh) {
+            case "all":
+                query = 'SELECT * FROM `v_day_details` WHERE `idModel`=? AND `date`=?';
+                try {
+                    return db.query(query, [idModel, date]);
+                } catch (error) {
+                    return error;
+                }
+            default:
+                query = 'SELECT * FROM `v_day_details` WHERE `idModel`=? AND `idWh`=? AND `date`=?';
+                try {
+                    return db.query(query, [idModel, idWh, date]);
+                } catch (error) {
+                    return error;
+                }
         }
+        
+
     }
 
 }
