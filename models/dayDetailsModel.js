@@ -5,6 +5,14 @@ module.exports = class DayDetails {
 
     constructor(item) {
 
+
+        this.model = {};
+        this.model.id = item.idModel;
+        this.model.name = item.name;
+        this.date = item.date;
+        this.warehouse = {};
+        this.warehouse.id = item.idWh;
+        this.warehouse.name = item.warehouse;
         this.type = item.type;
         this.id = item.idEvent;
         switch (item.type) {
@@ -49,7 +57,7 @@ module.exports = class DayDetails {
                     return error;
                 }
         }
-        
+
 
     }
 
