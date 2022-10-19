@@ -21,7 +21,14 @@ exports.getDayDetails = async (req, res) => {
                 eventDayArr.push(eventDay);
             })
 
-            return res.status(200).json(eventDayArr);
+            let obj = {};
+            obj.model = {};
+            obj.model.id = details[0].idModel;
+            obj.model.name = details[0].name;
+            obj.date = details[0].date;
+
+
+            return res.status(200).json([obj,eventDayArr]);
         } catch (error) {
             console.log("error:", error);
             return res.status(500).json({ msg: "We have problems with getting day details by idModel, idWh and date from database" });
