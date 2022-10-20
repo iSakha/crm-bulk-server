@@ -157,7 +157,7 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
             filteredAllModels = [];
 
             allModels.forEach(element => {
-                
+
                 if (!arr.includes(element.idModel)) {
                     filteredAllModels.push(element);
                 }
@@ -231,6 +231,70 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
 
     // return res.status(200).json({ msg: "ok" });
 
+}
+
+exports.searchModelByWhPeriod = async (req, res) => {
+    let modelsArr = [];
+    let dateArr = [];
+    console.log("searchModelByWhPeriod");
+    console.log("searchStr:", req.query.s);
+    console.log("idWh:", req.query.wh);
+    const start = req.query.start.slice(0, 10);
+    const end = req.query.end.slice(0, 10);
+    console.log("start:", start);
+    console.log("end:", end);
+
+    let status = await auth.authenticateJWT(req, res);
+    console.log("statusCode:", status);
+
+    if (status.status === 200) {
+        try {
+            const [models] = await BookCalendarEquip.searchModelByWhPeriod(req.query.s, req.query.wh, start, end);
+            console.log("models:", models);
+
+            models.map(item => {
+
+                let model = new BookCalendarEquip(item);
+
+                // let date = models.filter(elem => {
+                //     if (elem.idModel === item.idModel) {
+                //         return true;
+                //     }
+                // });
+
+                // console.log("date:", date);
+
+                // date.map(el => {
+                //     dateObj = {};
+                //     dateObj.day = el.day;
+                //     dateObj.inWork = el.inWork;
+                //     dateObj.inWorkQuest = el.inWorkQuest;
+                //     dateObj.inWorkApproved = el.inWorkApproved;
+                //     dateObj.inTransport = el.inTransport;
+                //     dateObj.availApproved = el.availApproved;
+                //     dateObj.availQuest = el.availQuest;
+
+                //     // console.log("dateObj:", dateObj);
+
+                //     dateArr.push(dateObj);
+
+                // });
+                // model.bookDate = dateArr;
+                modelsArr.push(model);
+            });
+            console.log("modelsArr:",modelsArr);
+            return res.status(200).json(modelsArr);
+        } catch (error) {
+            console.log("error:", error);
+            res.status(500).json({ msg: "We have problems with getting search models from database" });
+            return {
+                error: true,
+                message: 'Error from database'
+            }
+        }
+    } else {
+        return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
+    }
 }
 
 

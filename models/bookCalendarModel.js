@@ -108,4 +108,41 @@ module.exports = class BookCalendarEquip {
         }
     }
 
+    static searchModelByWhPeriod(searchStr,idWh, start, end) {
+        console.log('searchModelByWhPeriod: searchStr, idWh, start, end"');
+        console.log(searchStr, idWh, start, end);
+
+        let query;
+
+        switch (idWh) {
+            case '2':
+                console.log('case 2');
+                query = 'SELECT * FROM v_inwork_minsk WHERE name LIKE ' + "'%" + searchStr + "%'";
+                break;
+            case '3':
+                console.log('case 3');
+                query = 'SELECT * FROM v_inwork_moscow WHERE name LIKE ' + "'%" + searchStr + "%'";
+                break;
+            case '4':
+                console.log('case 4');
+                query = 'SELECT * FROM v_inwork_kazan WHERE name LIKE ' + "'%" + searchStr + "%'";
+                break;
+            case '5':
+                console.log('case 5');
+                query = 'SELECT * FROM v_inwork_piter WHERE name LIKE ' + "'%" + searchStr + "%'";
+                break;
+            case 'all':
+                console.log('case all');
+                query = 'SELECT * FROM v_inwork_all WHERE name LIKE ' + "'%" + searchStr + "%'";
+                break;
+
+        }
+
+        try {
+            return db.query(query + 'AND `day` >= ? AND `day` <= ?', [start, end]);
+        } catch (error) {
+            return error;
+        }
+    }
+
 }

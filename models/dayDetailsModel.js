@@ -4,12 +4,6 @@ const db = dtb.promise();
 module.exports = class DayDetails {
 
     constructor(item) {
-
-
-        // this.model = {};
-        // this.model.id = item.idModel;
-        // this.model.name = item.name;
-        // this.date = item.date;
    
         this.type = item.type;
         this.id = item.idEvent;
