@@ -149,3 +149,31 @@ exports.getModels = async (req, res) => {
 
     // res.status(200).json({msg:"ok"});
 }
+
+exports.searchModels = async (req, res) => {
+    console.log("searchModels");
+    let status = await auth.authenticateJWT(req, res);
+    console.log("statusCode:", status);
+
+    modelArr = [];
+
+    if (status.status === 200) {
+        try {
+            const [models] = await EquipModel.searchModel(req.query.s);
+            console.log("models:", models);
+
+            models.map(item => {
+                let model = new EquipModel(item);
+                modelArr.push(model);
+            })
+            return res.status(200).json(modelArr);
+            
+        } catch (error) {
+            console.log("error:", error);
+            return res.status(500).json({ msg: "We have problems with searching equipment from database" });
+        }
+
+    } else {
+        return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
+    }
+}

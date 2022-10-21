@@ -104,5 +104,14 @@ module.exports = class EquipModel {
             return error;
         }
     }
+
+    static searchModel(searchString) {
+        console.log("searchModel searchString:", searchString);
+        try {
+            return db.query(`SELECT * FROM v_model WHERE name LIKE '%${searchString}%'`);
+        } catch (error) {
+            return error;
+        }
+    }
     
 }
