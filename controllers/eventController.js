@@ -112,6 +112,47 @@ exports.getAll = async (req, res) => {
 
 }
 
+exports.getAllShort = async (req, res) => {
+
+    console.log("getAllShort");
+    let status = await auth.authenticateJWT(req, res);
+    console.log("statusCode:", status);
+
+    let allEventsArr = [];
+
+    if (status.status === 200) {
+
+        try {
+
+            const [events] = await Event.getAll();
+            console.log("allEvents from db:", events);
+
+            events.map(item => {
+                let event = new Event(item);
+
+                allEventsArr.push(event);
+            });
+
+            // return res.status(200).json({ msg: "ok" });
+            return res.status(200).json(allEventsArr);
+
+
+        } catch (error) {
+            console.log("error:", error);
+            res.status(500).json({ msg: "We have problems with getting short event data from database" });
+            return {
+                error: true,
+                message: 'Error from database'
+            }
+        }
+
+    } else {
+        return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
+    }
+
+
+} 
+
 exports.getOne = async (req, res) => {
     let phases;
     let equip;

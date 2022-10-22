@@ -61,7 +61,7 @@ exports.getModelsByCat = async (req, res) => {
             // console.log("equip:", equip);
             equip.map(item => {
                 console.log("item:", item);
-                let model = new EquipModel(item);
+                let model = new EquipModel(item, "short");
                 console.log("model.onWarehouse:", model.quantity.onWarehouse);
                 modelArr.push(model);
             });
@@ -114,8 +114,8 @@ exports.getModels = async (req, res) => {
     console.log("arr:", arr);
 
     q = arr.reduce((accumulator, curVal) => {
-        return  accumulator + "'" + curVal + "',";
-      },'');
+        return accumulator + "'" + curVal + "',";
+    }, '');
 
     q = q.slice(0, -1);
     q = "(" + q + ")";
@@ -132,7 +132,7 @@ exports.getModels = async (req, res) => {
             console.log("equip:", equip);
             equip.map(item => {
                 // console.log("item:", item);
-                let model = new EquipModel(item);
+                let model = new EquipModel(item, "short");
                 // console.log("model.onWarehouse:", model.quantity.onWarehouse);
                 modelArr.push(model);
             });
@@ -167,7 +167,7 @@ exports.searchModels = async (req, res) => {
                 modelArr.push(model);
             })
             return res.status(200).json(modelArr);
-            
+
         } catch (error) {
             console.log("error:", error);
             return res.status(500).json({ msg: "We have problems with searching equipment from database" });
