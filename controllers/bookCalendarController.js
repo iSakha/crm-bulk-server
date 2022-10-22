@@ -249,40 +249,53 @@ exports.searchModelByWhPeriod = async (req, res) => {
 
     if (status.status === 200) {
         try {
-            const [models] = await BookCalendarEquip.searchModelByWhPeriod(req.query.s, req.query.wh, start, end);
-            console.log("models:", models);
+            const [allModels] = await BookCalendarEquip.searchModelByWhPeriod(req.query.s, req.query.wh, start, end);
+            console.log("allModels:", allModels);
 
-            models.map(item => {
+            // getting unique models
+            let key = 'idModel';
+            const uniqueModels = [...new Map(allModels.map(item =>
+                [item[key], item])).values()];
+            console.log("uniqueModels:", uniqueModels);
+
+            // getting unique dates
+            key = 'day';
+            const uniqueDates = [...new Map(allModels.map(item =>
+                [item[key], item])).values()];
+            console.log("uniqueModels:", uniqueDates);
+
+            uniqueModels.map(item => {
 
                 let model = new BookCalendarEquip(item);
 
-                // let date = models.filter(elem => {
-                //     if (elem.idModel === item.idModel) {
-                //         return true;
-                //     }
-                // });
+                let date = uniqueDates.filter(elem => {
+                    if (elem.idModel === item.idModel) {
+                        return true;
+                    }
+                });
 
-                // console.log("date:", date);
+                console.log("date:", date);
 
-                // date.map(el => {
-                //     dateObj = {};
-                //     dateObj.day = el.day;
-                //     dateObj.inWork = el.inWork;
-                //     dateObj.inWorkQuest = el.inWorkQuest;
-                //     dateObj.inWorkApproved = el.inWorkApproved;
-                //     dateObj.inTransport = el.inTransport;
-                //     dateObj.availApproved = el.availApproved;
-                //     dateObj.availQuest = el.availQuest;
+                date.map(el => {
+                    dateObj = {};
+                    dateObj.day = el.day;
+                    dateObj.inWork = el.inWork;
+                    dateObj.inWorkQuest = el.inWorkQuest;
+                    dateObj.inWorkApproved = el.inWorkApproved;
+                    dateObj.inTransport = el.inTransport;
+                    dateObj.availApproved = el.availApproved;
+                    dateObj.availQuest = el.availQuest;
 
-                //     // console.log("dateObj:", dateObj);
+                    // console.log("dateObj:", dateObj);
 
-                //     dateArr.push(dateObj);
+                    dateArr.push(dateObj);
 
-                // });
-                // model.bookDate = dateArr;
+                });
+                model.bookDate = dateArr;
                 modelsArr.push(model);
             });
-            console.log("modelsArr:",modelsArr);
+            console.log("modelsArr:", modelsArr);
+            // return res.status(200).json({msg:"ok"});
             return res.status(200).json(modelsArr);
         } catch (error) {
             console.log("error:", error);
