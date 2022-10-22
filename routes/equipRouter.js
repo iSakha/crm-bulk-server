@@ -22,4 +22,8 @@ router.get('/cats', equipController.getCategories);
 // =====================================================================
 router.post('/models', equipController.getModels);
 
+// Search models by serach string
+// =====================================================================
+router.get('/search', equipController.searchModels);
+
 module.exports = router;
