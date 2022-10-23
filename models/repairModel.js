@@ -4,7 +4,7 @@ const db = dtb.promise();
 module.exports = class Repair {
     constructor(row) {
 
-        // this.id = row.idModel;
+        this.id = row.id;
         this.idDevice = row.idDevice;
         this.idEvent = row.idEvent;
         this.problem = row.problem;
@@ -66,9 +66,27 @@ module.exports = class Repair {
         }
     }
 
-    static getModel() {
+    static getModel(idModel, idWh) {
+        let query = "";
+        switch (idWh) {
+            case 2:
+                query = "SELECT * FROM `v_repair` WHERE `idWh`=2 AND `idModel`=?";
+                break;
+            case 3:
+                query = "SELECT * FROM `v_repair` WHERE `idWh`=3 AND `idModel`=?";
+                break;
+            case 4:
+                query = "SELECT * FROM `v_repair` WHERE `idWh`=4 AND `idModel`=?";
+                break;
+            case 5:
+                query = "SELECT * FROM `v_repair` WHERE `idWh`=5 AND `idModel`=?";
+                break;
+            default:
+                query = "SELECT * FROM `v_repair` WHERE `idModel`=?";
+                break;
+        }
         try {
-            return db.query('SELECT * FROM `v_repair`');
+            return db.query(query, [idModel]);
         } catch (error) {
             return error;
         }
