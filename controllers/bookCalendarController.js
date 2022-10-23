@@ -33,7 +33,8 @@ exports.getAll = async (req, res) => {
                         manufactor: item.manufactor,
                         name: item.name,
                         all: item.all,
-                        currentWh: item.currentWh
+                        currentWh: item.currentWh,
+                        currentRepair: item.currentRepair
                     });
                 }
             }
@@ -144,7 +145,8 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
                         manufactor: item.manufactor,
                         name: item.name,
                         qtyAll: item.qtyAll,
-                        currentWh: item.currentWh
+                        currentWh: item.currentWh,
+                        currentRepair: item.currentRepair
                     });
                 }
             }
@@ -268,7 +270,7 @@ exports.searchModelByWhPeriod = async (req, res) => {
 
                 let model = new BookCalendarEquip(item);
 
-                let date = uniqueDates.filter(elem => {
+                let date = allModels.filter(elem => {
                     if (elem.idModel === item.idModel) {
                         return true;
                     }

@@ -15,7 +15,7 @@ module.exports = class BookCalendarEquip {
         this.quantity.all = item.qtyAll;
         this.quantity.currentWarehouse = item.currentWh;
         this.quantity.otherWarehouse = parseInt(item.qtyAll) - parseInt(item.currentWh);
-        this.quantity.currentRepair = 42;
+        this.quantity.currentRepair = item.currentRepair;
 
     }
 
