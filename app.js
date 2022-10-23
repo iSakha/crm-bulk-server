@@ -14,6 +14,7 @@ const locationRouter = require("./routes/locationRouter");
 const movingRouter = require("./routes/movingRouter");
 const notificateRouter = require("./routes/notificateRouter");
 const dayDetailsRouter = require("./routes/dayDetailsRouter");
+const repairRouter = require("./routes/repairRouter");
 
 
 const PORT = process.env.PORT || 80;
@@ -33,6 +34,7 @@ app.use('/locations', locationRouter);
 app.use('/movings', movingRouter);
 app.use('/notifications', notificateRouter);
 app.use('/details', dayDetailsRouter);
+app.use('/repair', repairRouter);
 
 
 //          S E R V E R
