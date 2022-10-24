@@ -46,7 +46,7 @@ exports.validateUser = async (req, res) => {
                 
                 let user = new User(row[0]);
 
-                const accessToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, accessTokenSecret, { expiresIn: '120m' });
+                const accessToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, accessTokenSecret, { expiresIn: '15s' });
                 const refreshToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, refreshTokenSecret);
 
 
