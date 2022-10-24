@@ -41,6 +41,7 @@ exports.getUser = async (req, res) => {
 
     console.log("getUser");
     let status = await auth.authenticateJWT(req, res);
+    console.log("status:", status);
 
     if (status.status === 200) {
 

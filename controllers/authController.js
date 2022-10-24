@@ -63,8 +63,8 @@ exports.validateUser = async (req, res) => {
     } catch (error) {
         if (!error.statusCode) {
             console.log("error:", error);
-            error.statusCode = 500;
-            return res.status(500).json({"error": error});
+            error.statusCode = 403;
+            return res.status(403).json({"error": error});
         }
     }
 }
@@ -83,8 +83,11 @@ exports.updateToken = async (req, res) => {
             return res.sendStatus(403);
         }
 
-        const accessToken = jwt.sign({ username: user.username, role: user.role }, accessTokenSecret, { expiresIn: '120m' });
-        const refreshToken = jwt.sign({ username: user.username, role: user.role }, refreshTokenSecret);
+        const accessToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, accessTokenSecret, { expiresIn: '15s' });
+        const refreshToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, refreshTokenSecret);
+
+        // const accessToken = jwt.sign({ username: user.username, role: user.role }, accessTokenSecret, { expiresIn: '30s' });
+        // const refreshToken = jwt.sign({ username: user.username, role: user.role }, refreshTokenSecret);
 
         return res.status(200).json({
             accessToken,
