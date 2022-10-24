@@ -43,18 +43,29 @@ exports.validateUser = async (req, res) => {
 
 
             if (bcrypt.hashSync(passwordEnteredByUser, salt) === row[0].crypto) {
-                
+
                 let user = new User(row[0]);
 
-                const accessToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, accessTokenSecret, { expiresIn: '15s' });
+                const accessToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, accessTokenSecret, { expiresIn: '30s' });
                 const refreshToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, refreshTokenSecret);
 
-
+                // try {
+                //     const [result] = await auth.addToken(user.id, refreshToken);
+                //     console.log("validate user result:", result);
                 return res.status(200).json({
                     user,
                     accessToken,
                     refreshToken
                 });
+                // } catch (error) {
+                //     console.log("error:", error);
+                //     res.status(500).json({ msg: "We have problems with writing refresh token to  database" });
+                //     return {
+                //         error: true,
+                //         message: 'Error from database'
+                //     }
+                // }
+
             } else {
                 return res.status(401).json({ "result": "Wrong password or login" });
             }
@@ -64,7 +75,7 @@ exports.validateUser = async (req, res) => {
         if (!error.statusCode) {
             console.log("error:", error);
             error.statusCode = 403;
-            return res.status(403).json({"error": error});
+            return res.status(403).json({ "error": error });
         }
     }
 }
@@ -73,21 +84,46 @@ exports.updateToken = async (req, res) => {
 
     const { token } = req.body;
 
+    console.log("token:", token);
+
+
+
     if (!token) {
         console.log("token 401:", token);
         return res.sendStatus(401);
     }
-    jwt.verify(token, refreshTokenSecret, (err, user) => {
+    jwt.verify(token, refreshTokenSecret, async (err, user) => {
         if (err) {
             console.log("token 403:", token);
             return res.sendStatus(403);
         }
 
-        const accessToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, accessTokenSecret, { expiresIn: '15s' });
-        const refreshToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, refreshTokenSecret);
+        const [result] = await auth.validateRefreshToken(user.id, token);
+        console.log("result:", result);
 
-        // const accessToken = jwt.sign({ username: user.username, role: user.role }, accessTokenSecret, { expiresIn: '30s' });
-        // const refreshToken = jwt.sign({ username: user.username, role: user.role }, refreshTokenSecret);
+        if (result.length > 0) {
+            return res.status(403).json({ msg: "Refresh token скомпрометирован,нужно перелогиниться!!!" });
+        }
+
+
+        try {
+
+
+
+            const [res] = await auth.addToken(user.id, token);
+            console.log("validate user res:", res);
+
+        } catch (error) {
+            console.log("error:", error);
+            res.status(500).json({ msg: "We have problems with writing refresh token to  database" });
+            return {
+                error: true,
+                message: 'Error from database'
+            }
+        }
+
+        const accessToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, accessTokenSecret, { expiresIn: '30s' });
+        const refreshToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, refreshTokenSecret);
 
         return res.status(200).json({
             accessToken,

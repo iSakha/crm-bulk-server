@@ -3,13 +3,23 @@ const db = dtb.promise();
 
 
 
-function validateUser(usernameEnteredByUser) {
+async function validateUser(usernameEnteredByUser) {
     return db.query('SELECT * FROM `v_users` WHERE login = ?',[usernameEnteredByUser]);
+}
+
+async function addToken(idUser,rToken) {
+    return db.query('INSERT INTO `t_token` (refreshToken, idUser) VALUES(?,?)',[rToken, idUser]);
+}
+
+async function validateRefreshToken(idUser,rToken) {
+    return db.query('SELECT * FROM `t_token` WHERE refreshToken=? AND idUser=?',[rToken, idUser]);
 }
 
 
 module.exports = {
 
-    validateUser: validateUser
+    validateUser: validateUser,
+    addToken:addToken,
+    validateRefreshToken:validateRefreshToken
 
 };
