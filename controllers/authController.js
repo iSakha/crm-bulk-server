@@ -46,7 +46,7 @@ exports.validateUser = async (req, res) => {
 
                 let user = new User(row[0]);
 
-                const accessToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, accessTokenSecret, { expiresIn: '30s' });
+                const accessToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, accessTokenSecret, { expiresIn: '30m' });
                 const refreshToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, refreshTokenSecret);
 
                 // try {
@@ -122,7 +122,7 @@ exports.updateToken = async (req, res) => {
             }
         }
 
-        const accessToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, accessTokenSecret, { expiresIn: '30s' });
+        const accessToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, accessTokenSecret, { expiresIn: '30m' });
         const refreshToken = jwt.sign({ username: user.username, role: user.role, id: user.id }, refreshTokenSecret);
 
         return res.status(200).json({
