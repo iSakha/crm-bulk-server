@@ -35,9 +35,11 @@ exports.getAll = async (req, res) => {
                     return item = new MovingEquip(item);
                 });
 
-                if (foundEquip.length > 0) {
-                    movObj.model = foundEquip;
-                } else movObj.model = [];
+                // console.log("foundEquip:", foundEquip);
+
+                // if (foundEquip.length > 0) {
+                //     movObj.model = foundEquip;
+                // } else movObj.model = [];
 
                 allMovingsArr.push(movObj);
             }
@@ -202,6 +204,8 @@ exports.create = async (req, res) => {
 
 
 
+    } else {
+        return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
     }
 
 }
@@ -211,6 +215,9 @@ exports.update = async (req, res) => {
     console.log("update req.body:", req.body);
 
     let status = await auth.authenticateJWT(req, res);
+
+    console.log("status:", status);
+
     let userId = status.id;
     let responseDB;
     let msg;
@@ -273,14 +280,16 @@ exports.update = async (req, res) => {
                 }
             }
 
-            return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+            return res.status(responseDB[0].status).json([{ msg: responseDB[1].msg }, req.body]);
 
         } catch (error) {
             console.log("error:", error);
-            return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+            return res.status(responseDB[0].status).json([{ msg: responseDB[1].msg }]);
         }
 
 
+    } else {
+        return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
     }
 }
 
