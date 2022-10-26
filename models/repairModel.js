@@ -5,10 +5,13 @@ module.exports = class Repair {
     constructor(row) {
 
         this.id = row.id;
-        this.idDevice = row.idDevice;
+        this.date = row.date;
         this.idEvent = row.idEvent;
-        this.problem = row.problem;
-        this.notes = row.notes;
+
+        this.device = {};
+        this.device.idDevice = row.idDevice;
+        this.device.problem = row.problem;
+        this.device.notes = row.notes;
 
         this.warehouse = {};
         this.warehouse.id = row.idWh;
@@ -30,7 +33,7 @@ module.exports = class Repair {
 
 
 
-    static destructObj(idUser, modelId, deviceArr) {
+    static destructObj(id, date, idUser, modelId, deviceArr, unixTime) {
 
         let dataArr = [];
 
@@ -39,6 +42,8 @@ module.exports = class Repair {
 
             let dataRow = [];
 
+            dataRow.push(id);
+            dataRow.push(date);
             dataRow.push(modelId);
             dataRow.push(deviceArr[i].id);
             dataRow.push(deviceArr[i].problem);
@@ -49,6 +54,7 @@ module.exports = class Repair {
             dataRow.push(1);        //  qtt
             dataRow.push(3);        //  idCalcMethod (по серийникам)
             dataRow.push(idUser);   //  idUser
+            dataRow.push(unixTime);   //  unixTime
 
             dataArr.push(dataRow)
         }
@@ -61,6 +67,14 @@ module.exports = class Repair {
     static getAll() {
         try {
             return db.query('SELECT * FROM `v_repair`');
+        } catch (error) {
+            return error;
+        }
+    }
+
+    static getOne(id) {
+        try {
+            return db.query('SELECT * FROM `v_repair` WHERE id=?', [id]);
         } catch (error) {
             return error;
         }
@@ -94,7 +108,7 @@ module.exports = class Repair {
 
     static createRepair(deviceArr) {
         try {
-            return db.query('INSERT INTO `t_repair` (idModel, idDevice, problem, notes, idEvent, idWh, idRepairStatus, qtt, idCalcMethod, idUser) VALUES ?', [deviceArr]);
+            return db.query('INSERT INTO `t_repair` (id, date, idModel, idDevice, problem, notes, idEvent, idWh, idRepairStatus, qtt, idCalcMethod, idUser, unixTime) VALUES ?', [deviceArr]);
         } catch (error) {
             return error;
         }

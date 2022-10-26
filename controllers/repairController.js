@@ -36,6 +36,37 @@ exports.getAll = async (req, res) => {
     }
 }
 
+exports.getOne = async (req, res) => {
+    console.log("getOne");
+    let status = await auth.authenticateJWT(req, res);
+    console.log("statusCode:", status);
+
+    let allRepairsArr = [];
+
+    if (status.status === 200) {
+        try {
+            const [repairs] = await Repair.getOne(req.params.id);
+            console.log("getOne from db:", repairs);
+
+            repairs.map(item => {
+                let repair = new Repair(item);
+                allRepairsArr.push(repair);
+            })
+
+            return res.status(200).json(allRepairsArr);
+        } catch (error) {
+            console.log("error:", error);
+            res.status(500).json({ msg: "We have problems with getting repair data from database" });
+            return {
+                error: true,
+                message: 'Error from database'
+            }
+        }
+    } else {
+        return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
+    }
+}
+
 exports.getModel = async (req, res) => {
     console.log("getModel");
     let status = await auth.authenticateJWT(req, res);
@@ -60,11 +91,17 @@ exports.getModel = async (req, res) => {
                 message: 'Error from database'
             }
         }
+    } else {
+        return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
     }
 }
 
 exports.create = async (req, res) => {
+
     console.log("createRepair");
+
+    const rb = Object.assign({}, req.body);
+
     let status = await auth.authenticateJWT(req, res);
     console.log("statusCode:", status);
 
@@ -72,14 +109,17 @@ exports.create = async (req, res) => {
 
         const idModel = req.body.id;
         const idUser = status.id;
+        req.body.id = createRepairId();
+        rb.id = req.body.id;
+        let unixTime = Date.now();
 
-        let deviceArr = Repair.destructObj(idUser, idModel, req.body.device);
+        let deviceArr = Repair.destructObj(req.body.id,req.body.date,idUser, idModel, req.body.device, unixTime);
 
         console.log("deviceArr:", deviceArr);
 
         try {
             const [result] = await Repair.createRepair(deviceArr);
-            return res.status(200).json({ msg: "ok" });
+            return res.status(200).json([{ msg: "ok" },rb]);
         } catch (error) {
             console.log("error:", error);
             res.status(500).json({ msg: "We've got problems with creating repair" });
@@ -91,4 +131,12 @@ exports.create = async (req, res) => {
     } else {
         return res.status(status.status).json({ msg: "We've got problems with JWT authentication" });
     }
+}
+
+
+function createRepairId() {
+    let d = new Date();
+    let utc = d.getTime().toString();
+    let id = "rep" + utc.slice(0, 11);
+    return id;
 }
