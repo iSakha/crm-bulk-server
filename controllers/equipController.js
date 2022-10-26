@@ -150,6 +150,21 @@ exports.getModels = async (req, res) => {
     // res.status(200).json({msg:"ok"});
 }
 
+exports.getModel = async (req, res) => {
+    console.log("getModels");
+    let status = await auth.authenticateJWT(req, res);
+    console.log("statusCode:", status);
+
+    if (status.status === 200) {
+        const [models] = await EquipModel.getModel(req.params.id);
+        console.log("models:", models);
+        let model = new EquipModel(models[0]);
+        return res.status(200).json(model);
+    } else {
+        return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
+    }
+}
+
 exports.searchModels = async (req, res) => {
     console.log("searchModels");
     let status = await auth.authenticateJWT(req, res);

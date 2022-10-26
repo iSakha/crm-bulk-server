@@ -156,6 +156,15 @@ module.exports = class EquipModel {
         }
     }
 
+    static getModel(idModel) {
+        console.log("getModelBy id:", idModel);
+        try {
+            return db.query('SELECT * FROM v_model WHERE id=?', [idModel]);
+        } catch (error) {
+            return error;
+        }
+    }
+
     static searchModel(searchString) {
         console.log("searchModel searchString:", searchString);
         try {

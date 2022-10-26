@@ -22,6 +22,10 @@ router.get('/cats', equipController.getCategories);
 // =====================================================================
 router.post('/models', equipController.getModels);
 
+// Get model by id
+// =====================================================================
+router.get('/models/:id', equipController.getModel);
+
 // Search models by serach string
 // =====================================================================
 router.get('/search', equipController.searchModels);
