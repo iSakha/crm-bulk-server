@@ -119,6 +119,8 @@ exports.create = async (req, res) => {
     const rb = Object.assign({}, req.body);
 
     let status = await auth.authenticateJWT(req, res);
+    console.log("statusCode:", status);
+
     let userId = status.id;
     let responseDB;
     let msg;
@@ -154,22 +156,22 @@ exports.create = async (req, res) => {
                 switch (req.body.warehouseOut.id) {
                     case 2:
                         if(whQttArr[i].qtt2 < req.body.model[i].qtt) {
-                            return res.status(200).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                            return res.status(403).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
                         }
                         break;
                     case 3:
                         if(whQttArr[i].qtt3 < req.body.model[i].qtt) {
-                            return res.status(200).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                            return res.status(403).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
                         }
                         break;
                     case 4:
                         if(whQttArr[i].qtt4 < req.body.model[i].qtt) {
-                            return res.status(200).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                            return res.status(403).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
                         }
                         break;
                     case 5:
                         if(whQttArr[i].qtt5 < req.body.model[i].qtt) {
-                            return res.status(200).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                            return res.status(403).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
                         }
                         break;
                 }

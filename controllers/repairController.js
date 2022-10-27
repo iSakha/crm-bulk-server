@@ -118,6 +118,15 @@ exports.create = async (req, res) => {
         console.log("deviceRow:", deviceRow);
 
         try {
+
+            let [whQtt] = await Repair.checkRepEquipQtt(req.body.device.warehouse.id ,req.body.idModel);
+            console.log("whQttArr:", whQtt);   
+
+            
+            if(req.body.qtt > Object.values(whQtt[0])[0]) {
+                return res.status(403).json({msg:"Ошибка в выборе склада или количества приборов"});
+            }
+
             const [result] = await Repair.createRepair(deviceRow
                 );
             return res.status(200).json([{ msg: "ok" },rb]);
