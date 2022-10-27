@@ -9,6 +9,7 @@ module.exports = class Repair {
         this.idEvent = row.idEvent;
 
         this.device = {};
+        this.device.idModel = row.idModel
         this.device.idDevice = row.idDevice;
         this.device.problem = row.problem;
         this.device.notes = row.notes;
@@ -174,6 +175,10 @@ module.exports = class Repair {
     }
 
     static updateSN(deviceRow) {
-
+        try {
+            return db.query('INSERT INTO `t_repair` (id, date, idModel, idDevice, problem, notes, idEvent, idWh, idRepairStatus, qtt, idCalcMethod, idUser, unixTime) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', deviceRow);
+        } catch (error) {
+            return error;
+        }
     }
 }

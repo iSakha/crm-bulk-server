@@ -184,7 +184,7 @@ exports.update = async (req, res) => {
 
         const idModel = req.body.idModel;
         const idUser = status.id;
-        req.body.id = createRepairId();
+        req.body.id = req.params.id;
         rb.id = req.body.id;
         let unixTime = Date.now();
 
@@ -225,6 +225,7 @@ exports.update = async (req, res) => {
                             }
                         }
                     case 3:
+                        deviceRow[9] = -deviceRow[9];
                         try {
                             const [result] = await Repair.updateSN(deviceRow);
                             return res.status(200).json([{ msg: "Запись успешно обновлена" }, rb]);
@@ -243,6 +244,8 @@ exports.update = async (req, res) => {
             default:
                 return res.status(500).json({ msg: "Неверно выбран статус ремонта прибора" });
         }
+    } else {
+        return res.status(status.status).json({ msg: "We have problems with JWT authentication" });
     }
 }
 function createRepairId() {
