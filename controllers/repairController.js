@@ -113,23 +113,23 @@ exports.create = async (req, res) => {
         rb.id = req.body.id;
         let unixTime = Date.now();
 
-        let deviceRow = Repair.destructObj(req.body.id,req.body.date,idUser, idModel, req.body.device, req.body.idCalcMethod, req.body.qtt, unixTime);
+        let deviceRow = Repair.destructObj(req.body.id, req.body.date, idUser, idModel, req.body.device, req.body.idCalcMethod, req.body.qtt, unixTime);
 
         console.log("deviceRow:", deviceRow);
 
         try {
 
-            let [whQtt] = await Repair.checkRepEquipQtt(req.body.device.warehouse.id ,req.body.idModel);
-            console.log("whQttArr:", whQtt);   
+            let [whQtt] = await Repair.checkRepEquipQtt(req.body.device.warehouse.id, req.body.idModel);
+            console.log("whQttArr:", whQtt);
 
-            
-            if(req.body.qtt > Object.values(whQtt[0])[0]) {
-                return res.status(403).json({msg:"Ошибка в выборе склада или количества приборов"});
+
+            if (req.body.qtt > Object.values(whQtt[0])[0]) {
+                return res.status(403).json({ msg: "Ошибка в выборе склада или количества приборов" });
             }
 
             const [result] = await Repair.createRepair(deviceRow
-                );
-            return res.status(200).json([{ msg: "ok" },rb]);
+            );
+            return res.status(200).json([{ msg: "ok" }, rb]);
         } catch (error) {
             console.log("error:", error);
             res.status(500).json({ msg: "We've got problems with creating repair" });
@@ -143,7 +143,7 @@ exports.create = async (req, res) => {
     }
 }
 
-exports.getRepairStatus = async(req,res) => {
+exports.getRepairStatus = async (req, res) => {
     try {
         const [result] = await Repair.getRepairStatus();
         result.shift();
@@ -158,7 +158,7 @@ exports.getRepairStatus = async(req,res) => {
     }
 }
 
-exports.getCalcMethod = async(req,res) => {
+exports.getCalcMethod = async (req, res) => {
     try {
         const [result] = await Repair.getCalcMethod();
         result.shift();
@@ -169,6 +169,79 @@ exports.getCalcMethod = async(req,res) => {
         return {
             error: true,
             message: 'Error from database'
+        }
+    }
+}
+
+exports.update = async (req, res) => {
+    console.log("update req.body:", req.body);
+    const rb = Object.assign({}, req.body);
+
+    let status = await auth.authenticateJWT(req, res);
+    console.log("statusCode:", status);
+
+    if (status.status === 200) {
+
+        const idModel = req.body.idModel;
+        const idUser = status.id;
+        req.body.id = createRepairId();
+        rb.id = req.body.id;
+        let unixTime = Date.now();
+
+        let deviceRow = Repair.destructObj(req.body.id, req.body.date, idUser, idModel, req.body.device, req.body.idCalcMethod, req.body.qtt, unixTime);
+
+        console.log("deviceRow:", deviceRow);
+
+        switch (req.body.device.status.id) {
+            case 3:
+            case 4:
+            case 5:
+
+                try {
+                    const [result] = await Repair.updateNoCalc(deviceRow);
+                    return res.status(200).json([{ msg: "Запись успешно обновлена" }, rb]);
+                } catch (error) {
+                    console.log("error:", error);
+                    res.status(500).json({ msg: "We've got problems with updateNoCalc" });
+                    return {
+                        error: true,
+                        message: 'Error from database'
+                    }
+                }
+
+            case 6:
+                switch (req.body.idCalcMethod) {
+                    case 2:
+                        deviceRow[9] = -deviceRow[9];
+                        try {
+                            const [result] = await Repair.updateBulk(deviceRow);
+                            return res.status(200).json([{ msg: "Запись успешно обновлена" }, rb]);
+                        } catch (error) {
+                            console.log("error:", error);
+                            res.status(500).json({ msg: "We've got problems with updateNoCalc" });
+                            return {
+                                error: true,
+                                message: 'Error from database'
+                            }
+                        }
+                    case 3:
+                        try {
+                            const [result] = await Repair.updateSN(deviceRow);
+                            return res.status(200).json([{ msg: "Запись успешно обновлена" }, rb]);
+                        } catch (error) {
+                            console.log("error:", error);
+                            res.status(500).json({ msg: "We've got problems with updateNoCalc" });
+                            return {
+                                error: true,
+                                message: 'Error from database'
+                            }
+                        }
+                    default:
+                        return res.status(500).json({ msg: "Неверно выбран метод подсчета" });
+                }
+
+            default:
+                return res.status(500).json({ msg: "Неверно выбран статус ремонта прибора" });
         }
     }
 }

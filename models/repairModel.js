@@ -142,7 +142,7 @@ module.exports = class Repair {
 
     static getRepairStatus() {
         try {
-            return db.query('SELECT * FROM `t_repair_status`');
+            return db.query('SELECT * FROM `t_repair`');
         } catch (error) {
             return error;
         }
@@ -154,5 +154,26 @@ module.exports = class Repair {
         } catch (error) {
             return error;
         }
+    }
+
+    static updateNoCalc(deviceRow) {
+        console.log("updateNoCalc:");
+        try {
+            return db.query('INSERT INTO `t_repair` (id, date, idModel, idDevice, problem, notes, idEvent, idWh, idRepairStatus, qtt, idCalcMethod, idUser, unixTime) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', deviceRow);
+        } catch (error) {
+            return error;
+        }
+    }
+
+    static updateBulk(deviceRow) {
+        try {
+            return db.query('INSERT INTO `t_repair` (id, date, idModel, idDevice, problem, notes, idEvent, idWh, idRepairStatus, qtt, idCalcMethod, idUser, unixTime) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', deviceRow);
+        } catch (error) {
+            return error;
+        }
+    }
+
+    static updateSN(deviceRow) {
+
     }
 }
