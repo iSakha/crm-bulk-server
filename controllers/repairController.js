@@ -146,6 +146,7 @@ exports.create = async (req, res) => {
 exports.getRepairStatus = async(req,res) => {
     try {
         const [result] = await Repair.getRepairStatus();
+        result.shift();
         return res.status(200).json(result)
     } catch (error) {
         console.log("error:", error);
@@ -160,6 +161,7 @@ exports.getRepairStatus = async(req,res) => {
 exports.getCalcMethod = async(req,res) => {
     try {
         const [result] = await Repair.getCalcMethod();
+        result.shift();
         return res.status(200).json(result)
     } catch (error) {
         console.log("error:", error);
