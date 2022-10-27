@@ -86,19 +86,19 @@ module.exports = class Repair {
         let query = "";
         switch (idWh) {
             case 2:
-                query = "SELECT * FROM `v_repair` WHERE `idWh`=2 AND `idModel`=?";
+                query = "SELECT * FROM `v_repair_last_state` WHERE `idWh`=2 AND `idModel`=?";
                 break;
             case 3:
-                query = "SELECT * FROM `v_repair` WHERE `idWh`=3 AND `idModel`=?";
+                query = "SELECT * FROM `v_repair_last_state` WHERE `idWh`=3 AND `idModel`=?";
                 break;
             case 4:
-                query = "SELECT * FROM `v_repair` WHERE `idWh`=4 AND `idModel`=?";
+                query = "SELECT * FROM `v_repair_last_state` WHERE `idWh`=4 AND `idModel`=?";
                 break;
             case 5:
-                query = "SELECT * FROM `v_repair` WHERE `idWh`=5 AND `idModel`=?";
+                query = "SELECT * FROM `v_repair_last_state` WHERE `idWh`=5 AND `idModel`=?";
                 break;
             default:
-                query = "SELECT * FROM `v_repair` WHERE `idModel`=?";
+                query = "SELECT * FROM `v_repair_last_state` WHERE `idModel`=?";
                 break;
         }
         try {
