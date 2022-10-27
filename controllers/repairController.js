@@ -143,7 +143,33 @@ exports.create = async (req, res) => {
     }
 }
 
+exports.getRepairStatus = async(req,res) => {
+    try {
+        const [result] = await Repair.getRepairStatus();
+        return res.status(200).json(result)
+    } catch (error) {
+        console.log("error:", error);
+        res.status(500).json({ msg: "We have problems with getting repair status from database" });
+        return {
+            error: true,
+            message: 'Error from database'
+        }
+    }
+}
 
+exports.getCalcMethod = async(req,res) => {
+    try {
+        const [result] = await Repair.getCalcMethod();
+        return res.status(200).json(result)
+    } catch (error) {
+        console.log("error:", error);
+        res.status(500).json({ msg: "We have problems with getting repair calc method from database" });
+        return {
+            error: true,
+            message: 'Error from database'
+        }
+    }
+}
 function createRepairId() {
     let d = new Date();
     let utc = d.getTime().toString();

@@ -36,29 +36,29 @@ module.exports = class Repair {
     static destructObj(idRepair, date, idUser, idModel, device, idCalcMethod, qtt, unixTime) {
 
 
-            let dataRow = [];
+        let dataRow = [];
 
-            dataRow.push(idRepair);
-            dataRow.push(date.slice(0,10));
-            dataRow.push(idModel);
-            dataRow.push(device.id);
-            dataRow.push(device.problem);
-            dataRow.push(device.notes);
-            dataRow.push(device.idEvent);
-            dataRow.push(device.warehouse.id);
-            dataRow.push(device.status.id);
+        dataRow.push(idRepair);
+        dataRow.push(date.slice(0, 10));
+        dataRow.push(idModel);
+        dataRow.push(device.id);
+        dataRow.push(device.problem);
+        dataRow.push(device.notes);
+        dataRow.push(device.idEvent);
+        dataRow.push(device.warehouse.id);
+        dataRow.push(device.status.id);
 
-            if (idCalcMethod === 3) {
-                dataRow.push(1);        //  qtt
-            };
+        if (idCalcMethod === 3) {
+            dataRow.push(1);        //  qtt
+        };
 
-            if (idCalcMethod === 2) {
-                dataRow.push(qtt);        //  qtt
-            }
+        if (idCalcMethod === 2) {
+            dataRow.push(qtt);        //  qtt
+        }
 
-            dataRow.push(idCalcMethod);        //  idCalcMethod (по серийникам или россыпью)
-            dataRow.push(idUser);   //  idUser
-            dataRow.push(unixTime);   //  unixTime
+        dataRow.push(idCalcMethod);        //  idCalcMethod (по серийникам или россыпью)
+        dataRow.push(idUser);   //  idUser
+        dataRow.push(unixTime);   //  unixTime
 
         return dataRow;
 
@@ -140,5 +140,19 @@ module.exports = class Repair {
         }
     }
 
+    static getRepairStatus() {
+        try {
+            return db.query('SELECT * FROM `t_repair_status`');
+        } catch (error) {
+            return error;
+        }
+    }
 
+    static getCalcMethod() {
+        try {
+            return db.query('SELECT * FROM `t_calc_method`');
+        } catch (error) {
+            return error;
+        }
+    }
 }

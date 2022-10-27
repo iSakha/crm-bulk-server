@@ -5,6 +5,8 @@ const router = express.Router();
 router.get('/', repairtroller.getAll);
 router.get('/id/:id', repairtroller.getOne);
 router.get('/model', repairtroller.getModel);
+router.get('/repairstatus', repairtroller.getRepairStatus);
+router.get('/calcmethod', repairtroller.getCalcMethod);
 router.post('/', repairtroller.create);
 
 module.exports = router;
