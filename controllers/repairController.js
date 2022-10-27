@@ -98,7 +98,7 @@ exports.getModel = async (req, res) => {
 
 exports.create = async (req, res) => {
 
-    console.log("createRepair");
+    console.log("createRepair req.body:", req.body);
 
     const rb = Object.assign({}, req.body);
 
@@ -107,18 +107,19 @@ exports.create = async (req, res) => {
 
     if (status.status === 200) {
 
-        const idModel = req.body.id;
+        const idModel = req.body.idModel;
         const idUser = status.id;
         req.body.id = createRepairId();
         rb.id = req.body.id;
         let unixTime = Date.now();
 
-        let deviceArr = Repair.destructObj(req.body.id,req.body.date,idUser, idModel, req.body.device, unixTime);
+        let deviceRow = Repair.destructObj(req.body.id,req.body.date,idUser, idModel, req.body.device, req.body.idCalcMethod, req.body.qtt, unixTime);
 
-        console.log("deviceArr:", deviceArr);
+        console.log("deviceRow:", deviceRow);
 
         try {
-            const [result] = await Repair.createRepair(deviceArr);
+            const [result] = await Repair.createRepair(deviceRow
+                );
             return res.status(200).json([{ msg: "ok" },rb]);
         } catch (error) {
             console.log("error:", error);

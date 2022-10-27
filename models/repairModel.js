@@ -33,33 +33,34 @@ module.exports = class Repair {
 
 
 
-    static destructObj(id, date, idUser, modelId, deviceArr, unixTime) {
+    static destructObj(idRepair, date, idUser, idModel, device, idCalcMethod, qtt, unixTime) {
 
-        let dataArr = [];
-
-
-        for (let i = 0; i < deviceArr.length; i++) {
 
             let dataRow = [];
 
-            dataRow.push(id);
-            dataRow.push(date);
-            dataRow.push(modelId);
-            dataRow.push(deviceArr[i].id);
-            dataRow.push(deviceArr[i].problem);
-            dataRow.push(deviceArr[i].notes);
-            dataRow.push(deviceArr[i].idEvent);
-            dataRow.push(deviceArr[i].warehouse.id);
-            dataRow.push(deviceArr[i].status.id);
-            dataRow.push(1);        //  qtt
-            dataRow.push(3);        //  idCalcMethod (по серийникам)
+            dataRow.push(idRepair);
+            dataRow.push(date.slice(0,10));
+            dataRow.push(idModel);
+            dataRow.push(device.id);
+            dataRow.push(device.problem);
+            dataRow.push(device.notes);
+            dataRow.push(device.idEvent);
+            dataRow.push(device.warehouse.id);
+            dataRow.push(device.status.id);
+
+            if (idCalcMethod === 3) {
+                dataRow.push(1);        //  qtt
+            };
+
+            if (idCalcMethod === 2) {
+                dataRow.push(qtt);        //  qtt
+            }
+
+            dataRow.push(idCalcMethod);        //  idCalcMethod (по серийникам или россыпью)
             dataRow.push(idUser);   //  idUser
             dataRow.push(unixTime);   //  unixTime
 
-            dataArr.push(dataRow)
-        }
-
-        return dataArr;
+        return dataRow;
 
 
     }
@@ -106,9 +107,34 @@ module.exports = class Repair {
         }
     }
 
-    static createRepair(deviceArr) {
+    static createRepair(deviceRow) {
         try {
-            return db.query('INSERT INTO `t_repair` (id, date, idModel, idDevice, problem, notes, idEvent, idWh, idRepairStatus, qtt, idCalcMethod, idUser, unixTime) VALUES ?', [deviceArr]);
+            return db.query('INSERT INTO `t_repair` (id, date, idModel, idDevice, problem, notes, idEvent, idWh, idRepairStatus, qtt, idCalcMethod, idUser, unixTime) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', deviceRow);
+        } catch (error) {
+            return error;
+        }
+    }
+
+    static checkRepEquipQtt(whOut, idModel) {
+        console.log('checkRepEquipQtt_mod whOut, idModel:', whOut, idModel);
+        let query = "";
+        switch (whOut) {
+            case 2:
+                query = "SELECT `qtt2` FROM `t_model` WHERE `id`=?";
+                break;
+            case 3:
+                query = "SELECT `qtt3` FROM `t_model` WHERE `id`=?";
+                break;
+            case 4:
+                query = "SELECT `qtt4` FROM `t_model` WHERE `id`=?";
+                break;
+            case 5:
+                query = "SELECT `qtt5` FROM `t_model` WHERE `id`=?";
+                break;
+        }
+
+        try {
+            return db.query(query, [idModel]);
         } catch (error) {
             return error;
         }
