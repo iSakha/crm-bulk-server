@@ -143,7 +143,7 @@ module.exports = class Repair {
 
     static getRepairStatus() {
         try {
-            return db.query('SELECT * FROM `t_repair`');
+            return db.query('SELECT * FROM `t_repair_status`');
         } catch (error) {
             return error;
         }
