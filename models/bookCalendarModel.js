@@ -80,23 +80,23 @@ module.exports = class BookCalendarEquip {
         switch (idWh) {
             case '2':
                 console.log('case 2');
-                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyMinsk` as currentWh FROM `v_model` WHERE `idCat`=?"
+                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyMinsk` as currentWh, `qttMinskBrokenSN` + `qttMinskBrokenBulk` as currentRepair FROM `v_model` WHERE `idCat`=?"
                 break;
             case '3':
                 console.log('case 3');
-                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyMoscow` as currentWh FROM `v_model` WHERE `idCat`=?"
+                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyMoscow` as currentWh, `qttMoscowBrokenSN` + `qttMoscowBrokenBulk` as currentRepair FROM `v_model` WHERE `idCat`=?"
                 break;
             case '4':
                 console.log('case 4');
-                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyKazan` as currentWh FROM `v_model` WHERE `idCat`=?"
+                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyKazan` as currentWh, `qttKazanBrokenSN` + `qttKazanBrokenBulk` as currentRepair FROM `v_model` WHERE `idCat`=?"
                 break;
             case '5':
                 console.log('case 5');
-                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyPiter` as currentWh FROM `v_model` WHERE `idCat`=?"
+                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyPiter` as currentWh, `qttPiterBrokenSN` + `qttPiterBrokenBulk` as currentRepair FROM `v_model` WHERE `idCat`=?"
                 break;
             default:
                 console.log('default');
-                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyAll` as currentWh FROM `v_model` WHERE `idCat`=?"
+                query = "SELECT `id` as idModel, `name`, `manufactor`, `qtyAll`, `qtyAll` as currentWh, `qttMinskBrokenSN` + `qttMinskBrokenBulk` + `qttMoscowBrokenSN` + `qttMoscowBrokenBulk` + `qttKazanBrokenSN` + `qttKazanBrokenBulk` + `qttPiterBrokenSN` + `qttPiterBrokenBulk` as currentRepair FROM `v_model` WHERE `idCat`=?"
                 break;
         }
 

@@ -103,13 +103,13 @@ exports.getAll = async (req, res) => {
 exports.getModelsByCatWhPeriod = async (req, res) => {
     let modelsArr = [];
     let filteredAllModels = [];
-    console.log("getModelsByCatWhPeriod");
-    console.log("idCat:", req.query.cat);
-    console.log("idWh:", req.query.wh);
+    // console.log("getModelsByCatWhPeriod");
+    // console.log("idCat:", req.query.cat);
+    // console.log("idWh:", req.query.wh);
     const start = req.query.start.slice(0, 10);
     const end = req.query.end.slice(0, 10);
-    console.log("start:", start);
-    console.log("end:", end);
+    // console.log("start:", start);
+    // console.log("end:", end);
 
 
     let status = await auth.authenticateJWT(req, res);
@@ -122,7 +122,7 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
             let [allModels] = await BookCalendarEquip.getAllModelsByCat(req.query.cat, req.query.wh);
             console.log("allModels:", allModels);
             const [models] = await BookCalendarEquip.getModelsByCatWhPeriod(req.query.cat, req.query.wh, start, end);
-            console.log("models:", models);
+            // console.log("models:", models);
             const row = [];
             const map = new Map();
             let arr = [];
@@ -148,12 +148,14 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
                         currentWh: item.currentWh,
                         currentRepair: item.currentRepair
                     });
+
+                    // console.log("row:", row);
                 }
             }
 
-            console.log("arr:", arr);
+            // console.log("arr:", arr);
             // console.log("arrLength:", arr.length);
-            // console.log("allModels:", allModels);
+            console.log("allModels:", allModels);
             // console.log("allModelsLength:", allModels.length);
 
             filteredAllModels = [];
