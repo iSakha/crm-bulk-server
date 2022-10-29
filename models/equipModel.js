@@ -15,7 +15,9 @@ module.exports = class EquipModel {
                 this.img = row.img;
                 this.category = {};
                 this.category.idDep = row.idDep;
+                this.category.nameDep = row.department;
                 this.category.idCat = row.idCat;
+                this.category.nameCat = row.category;
 
                 this.quantity = {};
                 this.quantity.all = {};
@@ -54,23 +56,30 @@ module.exports = class EquipModel {
             default:
                 this.id = row.id;
                 this.name = row.name;
+
                 this.manufactor = {};
                 this.manufactor.id = row.idManufactor;
                 this.manufactor.name = row.manufactor;
                 this.img = row.img;
+
                 this.category = {};
                 this.category.idDep = row.idDep;
+                this.category.nameDep = row.department;
                 this.category.idCat = row.idCat;
+                this.category.nameCat = row.category;
+
                 this.deviceData = {};
                 this.deviceData.weight = row.weight;
                 this.deviceData.power = row.power;
                 this.deviceData.transportWeight = row.transportWeight;
                 this.deviceData.volume = row.volume;
+
                 this.case = {};
                 this.case.inCase = row.inCase;
                 this.case.length = row.caseLength;
                 this.case.width = row.caseWidth;
                 this.case.height = row.caseHeight;
+                
                 this.quantity = {};
                 this.quantity.all = {};
                 this.quantity.all.qtt = row.qtyAll;
