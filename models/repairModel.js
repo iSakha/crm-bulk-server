@@ -85,19 +85,24 @@ module.exports = class Repair {
     static getModel(idModel, idWh) {
         let query = "";
         switch (idWh) {
-            case 2:
+            case "2":
+                console.log("case 2");
                 query = "SELECT * FROM `v_repair_last_state` WHERE `idWh`=2 AND `idModel`=?";
                 break;
-            case 3:
+            case "3":
+                console.log("case 3");
                 query = "SELECT * FROM `v_repair_last_state` WHERE `idWh`=3 AND `idModel`=?";
                 break;
-            case 4:
+            case "4":
+                console.log("case 4");
                 query = "SELECT * FROM `v_repair_last_state` WHERE `idWh`=4 AND `idModel`=?";
                 break;
-            case 5:
+            case "5":
+                console.log("case 5");
                 query = "SELECT * FROM `v_repair_last_state` WHERE `idWh`=5 AND `idModel`=?";
                 break;
             default:
+                console.log("case default");
                 query = "SELECT * FROM `v_repair_last_state` WHERE `idModel`=?";
                 break;
         }
