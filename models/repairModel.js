@@ -7,6 +7,8 @@ module.exports = class Repair {
         this.id = row.id;
         this.date = row.date;
         this.idEvent = row.idEvent;
+        this.idCalcMethod = row.idCalcMethod;
+        this.qtt = row.qtt;
 
         this.device = {};
         this.device.idModel = row.idModel
@@ -34,20 +36,28 @@ module.exports = class Repair {
 
 
 
-    static destructObj(idRepair, date, idUser, idModel, device, idCalcMethod, qtt, unixTime) {
+    static destructObj(idRepair, date, idEvent, idUser, idModel, device, idWh, idStatus, idCalcMethod, qtt, unixTime) {
 
+        console.log("idRepair:",idRepair);
+        console.log("date:",date.slice(0, -1));
+        console.log("idUser:",idUser);
+        console.log("idModel:",idModel);
+        console.log("device:",device);
+        console.log("idCalcMethod:",idCalcMethod);
+        console.log("qtt:",qtt);
+        console.log("unixTime:",unixTime);
 
         let dataRow = [];
 
         dataRow.push(idRepair);
-        dataRow.push(date.slice(0, 10));
+        dataRow.push(date.slice(0, -1));
         dataRow.push(idModel);
-        dataRow.push(device.id);
+        dataRow.push(device.idDevice);
         dataRow.push(device.problem);
         dataRow.push(device.notes);
-        dataRow.push(device.idEvent);
-        dataRow.push(device.warehouse.id);
-        dataRow.push(device.status.id);
+        dataRow.push(idEvent);
+        dataRow.push(idWh);
+        dataRow.push(idStatus);
 
         if (idCalcMethod === 3) {
             dataRow.push(1);        //  qtt

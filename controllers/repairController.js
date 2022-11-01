@@ -113,18 +113,20 @@ exports.create = async (req, res) => {
         rb.id = req.body.id;
         let unixTime = Date.now();
 
-        let deviceRow = Repair.destructObj(req.body.id, req.body.date, idUser, idModel, req.body.device, req.body.idCalcMethod, req.body.qtt, unixTime);
+        console.log("req.body:", req.body);
+
+        let deviceRow = Repair.destructObj(req.body.id, req.body.date, req.body.idEvent, idUser, idModel, req.body.device, req.body.warehouse.id, req.body.status.id, req.body.idCalcMethod, req.body.qtt, unixTime);
 
         console.log("deviceRow:", deviceRow);
 
         try {
 
-            let [whQtt] = await Repair.checkRepEquipQtt(req.body.device.warehouse.id, req.body.idModel);
+            let [whQtt] = await Repair.checkRepEquipQtt(req.body.warehouse.id, req.body.idModel);
             console.log("whQttArr:", whQtt);
 
 
             if (req.body.qtt > Object.values(whQtt[0])[0]) {
-                return res.status(403).json({ msg: "Ошибка в выборе склада или количества приборов" });
+                return res.status(400).json({ msg: "Ошибка в выборе склада или количества приборов" });
             }
 
             const [result] = await Repair.createRepair(deviceRow

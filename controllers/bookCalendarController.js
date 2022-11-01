@@ -191,7 +191,9 @@ exports.getModelsByCatWhPeriod = async (req, res) => {
                     dateObj.inWork = el.inWork;
                     dateObj.inWorkQuest = el.inWorkQuest;
                     dateObj.inWorkApproved = el.inWorkApproved;
-                    dateObj.inTransport = el.inTransport;
+                    dateObj.inTransport = {};
+                    dateObj.inTransport.events = el.inTransport;
+                    dateObj.inTransport.movings = "";
                     dateObj.availApproved = el.availApproved;
                     dateObj.availQuest = el.availQuest;
 
@@ -290,7 +292,7 @@ exports.searchModelByWhPeriod = async (req, res) => {
                     dateObj.availApproved = el.availApproved;
                     dateObj.availQuest = el.availQuest;
 
-                    // console.log("dateObj:", dateObj);
+                    console.log("dateObj:", dateObj);
 
                     dateArr.push(dateObj);
 
