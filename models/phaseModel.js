@@ -22,8 +22,8 @@ module.exports = class Phase {
 
             phaseRow.push(eventId);     // eventId
             phaseRow.push(id);
-            phaseRow.push(start.slice(0, 16));
-            phaseRow.push(end.slice(0, 16));
+            phaseRow.push(start.slice(0, -1));
+            phaseRow.push(end.slice(0, -1));
             phaseRow.push(userId);
             phaseRow.push(unixTime);
 
