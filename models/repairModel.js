@@ -8,10 +8,11 @@ module.exports = class Repair {
         this.date = row.date;
         this.idEvent = row.idEvent;
         this.idCalcMethod = row.idCalcMethod;
+        this.idModel = row.idModel
         this.qtt = row.qtt;
 
         this.device = {};
-        this.device.idModel = row.idModel
+        
         this.device.idDevice = row.idDevice;
         this.device.problem = row.problem;
         this.device.notes = row.notes;

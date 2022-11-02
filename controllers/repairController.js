@@ -190,11 +190,11 @@ exports.update = async (req, res) => {
         rb.id = req.body.id;
         let unixTime = Date.now();
 
-        let deviceRow = Repair.destructObj(req.body.id, req.body.date, idUser, idModel, req.body.device, req.body.idCalcMethod, req.body.qtt, unixTime);
+        let deviceRow = Repair.destructObj(req.body.id, req.body.date, req.body.idEvent, idUser, idModel, req.body.device, req.body.warehouse.id, req.body.status.id, req.body.idCalcMethod, req.body.qtt, unixTime);
 
         console.log("deviceRow:", deviceRow);
 
-        switch (req.body.device.status.id) {
+        switch (req.body.status.id) {
             case 3:
             case 4:
             case 5:
