@@ -151,7 +151,7 @@ exports.getAllShort = async (req, res) => {
     }
 
 
-} 
+}
 
 exports.getOne = async (req, res) => {
     let phases;
@@ -309,8 +309,13 @@ exports.createTrans = async (req, res) => {
         }
 
         if (req.body.booking.length > 0) {
+            let block = 0;
+            if(req.body.block === 1) {
+                block = 1;
+            }
 
-            bookEquipArr = BookEquipment.destructObj(req.body.booking, req.body.id, req.body.warehouse.id, userId, unixTime);
+            bookEquipArr = BookEquipment.destructObj(req.body.booking, req.body.id, req.body.warehouse.id, userId, unixTime, block);
+            console.log("bookEquipArr from destruct:", bookEquipArr);
             req.body.booking = bookEquipArr;
             console.log("================   booking   ============");
             let dateStart = new Date(req.body.time.start.slice(0, 10));
@@ -500,7 +505,12 @@ exports.updateTrans = async (req, res) => {
 
         if (req.body.booking.length > 0) {
 
-            bookEquipArr = BookEquipment.destructObj(req.body.booking, req.body.id, req.body.warehouse.id, userId, unixTime);
+            let block = 0;
+            if(req.body.block === 1) {
+                block = 1;
+            }
+
+            bookEquipArr = BookEquipment.destructObj(req.body.booking, req.body.id, req.body.warehouse.id, userId, unixTime, block);
             req.body.booking = bookEquipArr;
             console.log("================   booking   ============");
             let dateStart = new Date(req.body.time.start.slice(0, 10));

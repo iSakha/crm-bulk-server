@@ -7,10 +7,11 @@ module.exports = class BookEquipment {
         this.id = row.idModel;
         this.name = row.name;
         this.qtt = row.qtt;
+        this.block = row.block;
     }
 
 
-    static destructObj(obj, eventId, idWh, userId, unixTime) {
+    static destructObj(obj, eventId, idWh, userId, unixTime, block) {
 
         console.log("destructPhaseObj_mod:", obj);
         let equipArr = [];
@@ -18,7 +19,7 @@ module.exports = class BookEquipment {
         obj.map(item => {
             console.log("item:",item);
             let equipRow = [];
-            let { id, qtt } = item;
+            let { id, qtt, block } = item;
 
             // console.log("obj.phase:", obj.phase);
 
@@ -28,6 +29,7 @@ module.exports = class BookEquipment {
             equipRow.push(idWh);
             equipRow.push(userId);
             equipRow.push(unixTime);
+            equipRow.push(block);
 
             equipArr.push(equipRow);
         })
@@ -41,7 +43,7 @@ module.exports = class BookEquipment {
         console.log('addEventEquip');
         console.log('equipArr:', equipArr);
         try {
-            return db.query('INSERT INTO `t_event_equipment` (idEvent, idModel, qtt, idWarehouse, idUser, unixTime) VALUES ?', [equipArr]);
+            return db.query('INSERT INTO `t_event_equipment` (idEvent, idModel, qtt, idWarehouse, idUser, unixTime, block) VALUES ?', [equipArr]);
         } catch (error) {
             return error;
         }

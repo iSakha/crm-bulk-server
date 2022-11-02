@@ -66,7 +66,7 @@ const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
                                 return reject(msg);
                             });
                         }
-                        return connection.query('INSERT INTO `t_event_equipment` (idEvent, idModel, qtt, idWarehouse, idUser, unixTime) VALUES ?', [bookEquipArr], err => {
+                        return connection.query('INSERT INTO `t_event_equipment` (idEvent, idModel, qtt, idWarehouse, idUser, unixTime, block) VALUES ?', [bookEquipArr], err => {
                             if (err) {
                                 return connection.rollback(() => {
                                     connection.release();
@@ -208,7 +208,7 @@ const createEventEquip = (eventRow, bookEquipArr) => {
                             return reject(msg);
                         });
                     }
-                    return connection.query('INSERT INTO `t_event_equipment` (idEvent, idModel, qtt, idWarehouse, idUser, unixTime) VALUES ?', [bookEquipArr], err => {
+                    return connection.query('INSERT INTO `t_event_equipment` (idEvent, idModel, qtt, idWarehouse, idUser, unixTime, block) VALUES ?', [bookEquipArr], err => {
                         if (err) {
                             return connection.rollback(() => {
                                 connection.release();
@@ -363,7 +363,7 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
                                                 return reject(msg);
                                             });
                                         }
-                                        return connection.query('INSERT INTO `t_event_equipment` (idEvent, idModel, qtt, idWarehouse, idUser, unixTime) VALUES ?', [bookEquipArr], err => {
+                                        return connection.query('INSERT INTO `t_event_equipment` (idEvent, idModel, qtt, idWarehouse, idUser, unixTime, block) VALUES ?', [bookEquipArr], err => {
                                             if (err) {
                                                 return connection.rollback(() => {
                                                     connection.release();
@@ -608,7 +608,7 @@ const updateEventEquip = (idEvent, eventRow, bookEquipArr) => {
                                             return reject(msg);
                                         });
                                     }
-                                    return connection.query('INSERT INTO `t_event_equipment` (idEvent, idModel, qtt, idWarehouse, idUser, unixTime) VALUES ?', [bookEquipArr], err => {
+                                    return connection.query('INSERT INTO `t_event_equipment` (idEvent, idModel, qtt, idWarehouse, idUser, unixTime, block) VALUES ?', [bookEquipArr], err => {
                                         if (err) {
                                             return connection.rollback(() => {
                                                 connection.release();
