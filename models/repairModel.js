@@ -19,7 +19,7 @@ module.exports = class Repair {
 
         this.warehouse = {};
         this.warehouse.id = row.idWh;
-        // this.warehouse.name = row.warehouse;
+        this.warehouse.name = row.warehouse;
 
         this.status = {};
         this.status.id = row.idRepairStatus;
