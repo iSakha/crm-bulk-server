@@ -53,6 +53,11 @@ module.exports = class BookEquipment {
         console.log("getAllEquip");
         return db.query('SELECT * FROM `v_event_equipment`');
      }
+
+    static getEventDeps() {
+        console.log("getAllEquipShort");
+        return db.query('SELECT * FROM `v_event_dep`');
+     }
      
     static getOne(idEvent) {
         try {
