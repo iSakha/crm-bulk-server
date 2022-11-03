@@ -17,7 +17,7 @@ module.exports = class BookEquipment {
         let equipArr = [];
 
         obj.map(item => {
-            console.log("item:",item);
+            console.log("item:", item);
             let equipRow = [];
             let { id, qtt, block } = item;
 
@@ -52,8 +52,13 @@ module.exports = class BookEquipment {
     static getAllEquip() {
         console.log("getAllEquip");
         return db.query('SELECT * FROM `v_event_equipment`');
-     }
-     
+    }
+
+    static getEventDeps() {
+        console.log("getAllEquipShort");
+        return db.query('SELECT * FROM `v_event_dep`');
+    }
+
     static getOne(idEvent) {
         try {
             return db.query('SELECT * FROM `v_event_equipment` WHERE `idEvent`=?', [idEvent]);

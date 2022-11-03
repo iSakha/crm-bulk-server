@@ -127,8 +127,23 @@ exports.getAllShort = async (req, res) => {
             const [events] = await Event.getAll();
             console.log("allEvents from db:", events);
 
+            [equip] = await BookEquipment.getEventDeps();
+            console.log("short equip:", equip);
+
             events.map(item => {
                 let event = new Event(item);
+
+                let depRow = [];
+                equip.map(elem => {
+                    if(event.id === elem.idEvent ) {
+                        depRow.push(elem.dep);
+                    }
+                })
+
+                console.log("event.id:", event.id);
+                console.log("depRow:", depRow);
+
+                event.deps = depRow;
 
                 allEventsArr.push(event);
             });
