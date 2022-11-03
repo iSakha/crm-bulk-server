@@ -127,44 +127,10 @@ exports.getAllShort = async (req, res) => {
             const [events] = await Event.getAll();
             console.log("allEvents from db:", events);
 
-            const [equip] = await BookEquipment.getEventDeps();
-            console.log("equipShort:", equip);
-
-            let deps = {};
-            let depsRow = [];
-
-
-
-            deps.deps = depsRow;
-
             events.map(item => {
                 let event = new Event(item);
-                let deps = {};
-                let depsRow = [];
-                
-                let arr = [];
 
-                let filteredArr = [];
-                filteredArr = equip.filter(elem => {
-                    console.log("event.id:",event.id);
-                    console.log("elem.idEvent:",elem.idEvent);
-                    if(event.id === elem.idEvent) {
-                        return true;
-                    }
-                    console.log("event.id:",event.id);
-                    console.log("filteredArr:",filteredArr);
-                })
-
-                // console.log("event.id ,filteredArr:",event.id ,filteredArr);
-
-                // if(filteredArr.length > 0) {
-                //     depsRow.push("dep");
-                // }
-
-                deps.deps = depsRow;
-                arr.push(deps);
-                arr.push(event);
-                allEventsArr.push(arr);
+                allEventsArr.push(event);
             });
 
             // return res.status(200).json({ msg: "ok" });
@@ -344,7 +310,7 @@ exports.createTrans = async (req, res) => {
 
         if (req.body.booking.length > 0) {
             let block = 0;
-            if (req.body.block === 1) {
+            if(req.body.block === 1) {
                 block = 1;
             }
 
@@ -540,7 +506,7 @@ exports.updateTrans = async (req, res) => {
         if (req.body.booking.length > 0) {
 
             let block = 0;
-            if (req.body.block === 1) {
+            if(req.body.block === 1) {
                 block = 1;
             }
 
