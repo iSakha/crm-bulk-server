@@ -110,5 +110,13 @@ module.exports = class Event {
         }
     }
 
+    static getSummary() {
+        try {
+            return db.query('SELECT * FROM v_summary');
+        } catch (error) {
+            return error;
+        }
+    }
+
 }
 

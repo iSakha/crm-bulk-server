@@ -135,7 +135,7 @@ exports.getAllShort = async (req, res) => {
 
                 let depRow = [];
                 equip.map(elem => {
-                    if(event.id === elem.idEvent ) {
+                    if (event.id === elem.idEvent) {
                         depRow.push(elem.dep);
                     }
                 })
@@ -325,7 +325,7 @@ exports.createTrans = async (req, res) => {
 
         if (req.body.booking.length > 0) {
             let block = 0;
-            if(req.body.block === 1) {
+            if (req.body.block === 1) {
                 block = 1;
             }
 
@@ -521,7 +521,7 @@ exports.updateTrans = async (req, res) => {
         if (req.body.booking.length > 0) {
 
             let block = 0;
-            if(req.body.block === 1) {
+            if (req.body.block === 1) {
                 block = 1;
             }
 
@@ -597,6 +597,29 @@ exports.updateTrans = async (req, res) => {
     } else {
         res.status(status.status).json({ msg: "We have problems with JWT authentication" });
     }
+}
+
+exports.getSummary = async (req, res) => {
+    console.log("getSummary");
+    let status = await auth.authenticateJWT(req, res);
+    console.log("statusCode:", status);
+
+    if (status.status === 200) {
+        try {
+            const [result] = await Event.getSummary();
+            console.log("result:", result);
+            return res.status(200).json(result);
+            
+        } catch (error) {
+            console.log("error:", error);
+            res.status(500).json({ msg: "We have problems with getting short event data from database" });
+            return {
+                error: true,
+                message: 'Error from database'
+            }
+        }
+    }
+
 }
 
 function createEventId() {
