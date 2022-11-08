@@ -10,22 +10,6 @@ const pool = mysql.createPool({
     password: config.password
 });
 
-// const pool = mysql.createPool({
-//     connectionLimit: 10,
-//     host: "us-cdbr-east-06.cleardb.net",
-//     user: "b09978c9b32cd7",
-//     password: "c83f439e",
-//     database: "heroku_2a5cfbff796101a"
-// });
-
-// const pool = mysql.createPool({
-//     connectionLimit: 10,
-//     host: "localhost",
-//     user: "dev_user",
-//     password: "2836",
-//     database: "backup_crm_bulk"
-// });
-
 const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
     console.log("createEvent transaction");
     let msg = "";
@@ -34,14 +18,14 @@ const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
             return connection.beginTransaction(err => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
                 return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
@@ -50,7 +34,7 @@ const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
                             connection.release();
                             console.log("err:", err);
                             msg = "Inserting eventRow to `t_events` table failed";
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
                     }
@@ -62,7 +46,7 @@ const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Inserting phaseArr to `t_event_phases` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
                         }
@@ -72,7 +56,7 @@ const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = "Inserting bookEquipArr to `t_event_equipment` table failed";
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
                             }
@@ -83,7 +67,7 @@ const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
                                         connection.release();
                                         console.log("err:", err);
                                         msg = "Inserting bookCalendarArr to `t_booking_calendar` table failed";
-                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        resolve([{ status: 503 }, { msg: msg }]);
                                         return reject(msg);
                                     });
                                 }
@@ -93,12 +77,12 @@ const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
                                             connection.release();
                                             console.log("err:", err);
                                             msg = "Commit failed";
-                                            resolve([{ status: 400 }, { msg: msg }]);
+                                            resolve([{ status: 503 }, { msg: msg }]);
                                             return reject(msg);
                                         });
                                     }
 
-                                    msg = "Success!Created EventFull!"
+                                    msg = "Мероприятие успешно создано!"
                                     connection.release();
                                     resolve([{ status: 200 }, { msg: msg }]);
 
@@ -122,7 +106,7 @@ const createEventPhase = (eventRow, phaseArr) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
 
@@ -130,7 +114,7 @@ const createEventPhase = (eventRow, phaseArr) => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
 
@@ -140,7 +124,7 @@ const createEventPhase = (eventRow, phaseArr) => {
                             connection.release();
                             console.log("err:", err);
                             msg = "Inserting eventRow to `t_events` table failed";
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
                     }
@@ -151,7 +135,7 @@ const createEventPhase = (eventRow, phaseArr) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Inserting phaseArr to `t_event_phases` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
                         }
@@ -162,12 +146,12 @@ const createEventPhase = (eventRow, phaseArr) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = "Commit failed";
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
                             }
 
-                            msg = "Success!Created Event with phase only!"
+                            msg = "Мероприятие успешно создано!"
                             connection.release();
                             resolve([{ status: 200 }, { msg: msg }]);
                         })
@@ -187,14 +171,14 @@ const createEventEquip = (eventRow, bookEquipArr) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
             return connection.beginTransaction(err => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
 
@@ -204,7 +188,7 @@ const createEventEquip = (eventRow, bookEquipArr) => {
                             connection.release();
                             console.log("err:", err);
                             msg = "Inserting eventRow to `t_events` table failed";
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
                     }
@@ -214,7 +198,7 @@ const createEventEquip = (eventRow, bookEquipArr) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Inserting bookEquipArr to `t_event_equipment` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
                         }
@@ -224,12 +208,12 @@ const createEventEquip = (eventRow, bookEquipArr) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = "Commit failed";
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
                             }
 
-                            msg = "Success!Created Event with Equipment only!"
+                            msg = "Мероприятие успешно создано!"
                             connection.release();
                             resolve([{ status: 200 }, { msg: msg }]);
 
@@ -250,7 +234,7 @@ const createEventShort = (eventRow) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
             return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
@@ -259,13 +243,13 @@ const createEventShort = (eventRow) => {
                         connection.release();
                         console.log("err:", err);
                         msg = "Inserting eventRow to `t_events` table failed";
-                        resolve([{ status: 400 }, { msg: msg }]);
+                        resolve([{ status: 503 }, { msg: msg }]);
                         return reject(msg);
                     });
                 }
 
 
-                msg = "Success!Created shortEvent!"
+                msg = "Мероприятие успешно создано!"
                 connection.release();
                 resolve([{ status: 200 }, { msg: msg }]);
             })
@@ -282,14 +266,14 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
             return connection.beginTransaction(err => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
 
@@ -299,7 +283,7 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
                             connection.release();
                             console.log("err:", err);
                             msg = "Mark eventRow as deleted in `t_events` table failed";
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
                     }
@@ -310,7 +294,7 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Mark eventRow as deleted in `t_event_phases` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
 
@@ -322,7 +306,7 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
                                     connection.release();
                                     console.log("err:", err);
                                     msg = "Mark eventRow as deleted in `t_event_equipment` table failed";
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
 
@@ -335,7 +319,7 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
                                         connection.release();
                                         console.log("err:", err);
                                         msg = "Mark eventRow as deleted in `t_booking_calendar` table failed";
-                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        resolve([{ status: 503 }, { msg: msg }]);
                                         return reject(msg);
                                     });
                                 };
@@ -347,7 +331,7 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
                                             connection.release();
                                             console.log("err:", err);
                                             msg = "Inserting eventRow to `t_events` table failed";
-                                            resolve([{ status: 400 }, { msg: msg }]);
+                                            resolve([{ status: 503 }, { msg: msg }]);
                                             return reject(msg);
                                         });
                                     }
@@ -359,7 +343,7 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
                                                 connection.release();
                                                 console.log("err:", err);
                                                 msg = "Inserting phaseArr to `t_event_phases` table failed";
-                                                resolve([{ status: 400 }, { msg: msg }]);
+                                                resolve([{ status: 503 }, { msg: msg }]);
                                                 return reject(msg);
                                             });
                                         }
@@ -369,7 +353,7 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
                                                     connection.release();
                                                     console.log("err:", err);
                                                     msg = "Inserting bookEquipArr to `t_event_equipment` table failed";
-                                                    resolve([{ status: 400 }, { msg: msg }]);
+                                                    resolve([{ status: 503 }, { msg: msg }]);
                                                     return reject(msg);
                                                 });
                                             }
@@ -380,7 +364,7 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
                                                         connection.release();
                                                         console.log("err:", err);
                                                         msg = "Inserting bookCalendarArr to `t_booking_calendar` table failed";
-                                                        resolve([{ status: 400 }, { msg: msg }]);
+                                                        resolve([{ status: 503 }, { msg: msg }]);
                                                         return reject(msg);
                                                     });
                                                 }
@@ -390,12 +374,12 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
                                                             connection.release();
                                                             console.log("err:", err);
                                                             msg = "Commit failed";
-                                                            resolve([{ status: 400 }, { msg: msg }]);
+                                                            resolve([{ status: 503 }, { msg: msg }]);
                                                             return reject(msg);
                                                         });
                                                     }
 
-                                                    msg = "Success!Updated EventFull!"
+                                                    msg = "Мероприятие успешно обновлено!"
                                                     connection.release();
                                                     resolve([{ status: 200 }, { msg: msg }]);
 
@@ -425,7 +409,7 @@ const updateEventPhase = (idEvent, eventRow, phaseArr) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
 
@@ -433,7 +417,7 @@ const updateEventPhase = (idEvent, eventRow, phaseArr) => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
 
@@ -443,7 +427,7 @@ const updateEventPhase = (idEvent, eventRow, phaseArr) => {
                             connection.release();
                             console.log("err:", err);
                             msg = "Mark eventRow as deleted in `t_events` table failed";
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
                     }
@@ -454,7 +438,7 @@ const updateEventPhase = (idEvent, eventRow, phaseArr) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Mark eventRow as deleted in `t_event_phases` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
 
@@ -466,7 +450,7 @@ const updateEventPhase = (idEvent, eventRow, phaseArr) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = "Mark eventRow as deleted in `t_event_equipment` table failed";
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
 
@@ -478,7 +462,7 @@ const updateEventPhase = (idEvent, eventRow, phaseArr) => {
                                         connection.release();
                                         console.log("err:", err);
                                         msg = "Mark eventRow as deleted in `t_booking_calendar` table failed";
-                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        resolve([{ status: 503 }, { msg: msg }]);
                                         return reject(msg);
                                     });
                                 };
@@ -489,7 +473,7 @@ const updateEventPhase = (idEvent, eventRow, phaseArr) => {
                                             connection.release();
                                             console.log("err:", err);
                                             msg = "Inserting eventRow to `t_events` table failed";
-                                            resolve([{ status: 400 }, { msg: msg }]);
+                                            resolve([{ status: 503 }, { msg: msg }]);
                                             return reject(msg);
                                         });
                                     }
@@ -500,7 +484,7 @@ const updateEventPhase = (idEvent, eventRow, phaseArr) => {
                                                 connection.release();
                                                 console.log("err:", err);
                                                 msg = "Inserting phaseArr to `t_event_phases` table failed";
-                                                resolve([{ status: 400 }, { msg: msg }]);
+                                                resolve([{ status: 503 }, { msg: msg }]);
                                                 return reject(msg);
                                             });
                                         }
@@ -511,12 +495,12 @@ const updateEventPhase = (idEvent, eventRow, phaseArr) => {
                                                     connection.release();
                                                     console.log("err:", err);
                                                     msg = "Commit failed";
-                                                    resolve([{ status: 400 }, { msg: msg }]);
+                                                    resolve([{ status: 503 }, { msg: msg }]);
                                                     return reject(msg);
                                                 });
                                             }
 
-                                            msg = "Success!Created Event with phase only!"
+                                            msg = "Мероприятие успешно обновлено!"
                                             connection.release();
                                             resolve([{ status: 200 }, { msg: msg }]);
                                         })
@@ -540,14 +524,14 @@ const updateEventEquip = (idEvent, eventRow, bookEquipArr) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
             return connection.beginTransaction(err => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
 
@@ -557,7 +541,7 @@ const updateEventEquip = (idEvent, eventRow, bookEquipArr) => {
                             connection.release();
                             console.log("err:", err);
                             msg = "Mark eventRow as deleted in `t_events` table failed";
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
                     }
@@ -568,7 +552,7 @@ const updateEventEquip = (idEvent, eventRow, bookEquipArr) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Mark eventRow as deleted in `t_event_phases` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
 
@@ -580,7 +564,7 @@ const updateEventEquip = (idEvent, eventRow, bookEquipArr) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = "Mark eventRow as deleted in `t_event_equipment` table failed";
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
 
@@ -592,7 +576,7 @@ const updateEventEquip = (idEvent, eventRow, bookEquipArr) => {
                                         connection.release();
                                         console.log("err:", err);
                                         msg = "Mark eventRow as deleted in `t_booking_calendar` table failed";
-                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        resolve([{ status: 503 }, { msg: msg }]);
                                         return reject(msg);
                                     });
                                 };
@@ -604,7 +588,7 @@ const updateEventEquip = (idEvent, eventRow, bookEquipArr) => {
                                             connection.release();
                                             console.log("err:", err);
                                             msg = "Inserting eventRow to `t_events` table failed";
-                                            resolve([{ status: 400 }, { msg: msg }]);
+                                            resolve([{ status: 503 }, { msg: msg }]);
                                             return reject(msg);
                                         });
                                     }
@@ -614,7 +598,7 @@ const updateEventEquip = (idEvent, eventRow, bookEquipArr) => {
                                                 connection.release();
                                                 console.log("err:", err);
                                                 msg = "Inserting bookEquipArr to `t_event_equipment` table failed";
-                                                resolve([{ status: 400 }, { msg: msg }]);
+                                                resolve([{ status: 503 }, { msg: msg }]);
                                                 return reject(msg);
                                             });
                                         }
@@ -624,12 +608,12 @@ const updateEventEquip = (idEvent, eventRow, bookEquipArr) => {
                                                     connection.release();
                                                     console.log("err:", err);
                                                     msg = "Commit failed";
-                                                    resolve([{ status: 400 }, { msg: msg }]);
+                                                    resolve([{ status: 503 }, { msg: msg }]);
                                                     return reject(msg);
                                                 });
                                             }
 
-                                            msg = "Success!Created Event with Equipment only!"
+                                            msg = "Мероприятие успешно обновлено!"
                                             connection.release();
                                             resolve([{ status: 200 }, { msg: msg }]);
 
@@ -654,7 +638,7 @@ const updateEventShort = (idEvent, eventRow) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
 
@@ -664,7 +648,7 @@ const updateEventShort = (idEvent, eventRow) => {
                         connection.release();
                         console.log("err:", err);
                         msg = "Mark eventRow as deleted in `t_events` table failed";
-                        resolve([{ status: 400 }, { msg: msg }]);
+                        resolve([{ status: 503 }, { msg: msg }]);
                         return reject(msg);
                     });
                 }
@@ -675,7 +659,7 @@ const updateEventShort = (idEvent, eventRow) => {
                             connection.release();
                             console.log("err:", err);
                             msg = "Mark eventRow as deleted in `t_event_phases` table failed";
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
 
@@ -688,7 +672,7 @@ const updateEventShort = (idEvent, eventRow) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Mark eventRow as deleted in `t_event_equipment` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
 
@@ -701,7 +685,7 @@ const updateEventShort = (idEvent, eventRow) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = "Mark eventRow as deleted in `t_booking_calendar` table failed";
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
                             };
@@ -712,13 +696,13 @@ const updateEventShort = (idEvent, eventRow) => {
                                         connection.release();
                                         console.log("err:", err);
                                         msg = "Inserting eventRow to `t_events` table failed";
-                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        resolve([{ status: 503 }, { msg: msg }]);
                                         return reject(msg);
                                     });
                                 }
 
 
-                                msg = "Success!Created shortEvent!"
+                                msg = "Мероприятие успешно обновлено!"
                                 connection.release();
                                 resolve([{ status: 200 }, { msg: msg }]);
                             })
@@ -740,14 +724,14 @@ const deleteEvent = (idEvent, eventRow) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
             return connection.beginTransaction(err => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
                 return connection.execute('UPDATE t_events SET is_deleted=1 WHERE idEvent=?', [idEvent], err => {
@@ -756,7 +740,7 @@ const deleteEvent = (idEvent, eventRow) => {
                             connection.release();
                             console.log("err:", err);
                             msg = `Mark is_deleted event with id = ${idEvent} failed`;
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
 
@@ -768,7 +752,7 @@ const deleteEvent = (idEvent, eventRow) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Copy eventRow to `t_events` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
                         }
@@ -778,7 +762,7 @@ const deleteEvent = (idEvent, eventRow) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = `Mark is_deleted phase with id = ${idEvent} failed`;
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
                             }
@@ -788,7 +772,7 @@ const deleteEvent = (idEvent, eventRow) => {
                                         connection.release();
                                         console.log("err:", err);
                                         msg = `Mark is_deleted event_equipment with id = ${idEvent} failed`;
-                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        resolve([{ status: 503 }, { msg: msg }]);
                                         return reject(msg);
                                     });
                                 }
@@ -798,7 +782,7 @@ const deleteEvent = (idEvent, eventRow) => {
                                             connection.release();
                                             console.log("err:", err);
                                             msg = `Mark is_deleted book calendar with id = ${idEvent} failed`;
-                                            resolve([{ status: 400 }, { msg: msg }]);
+                                            resolve([{ status: 503 }, { msg: msg }]);
                                             return reject(msg);
                                         });
                                     }
@@ -808,11 +792,11 @@ const deleteEvent = (idEvent, eventRow) => {
                                                 connection.release();
                                                 console.log("err:", err);
                                                 msg = "Commit when delete event failed";
-                                                resolve([{ status: 400 }, { msg: msg }]);
+                                                resolve([{ status: 503 }, { msg: msg }]);
                                                 return reject(msg);
                                             });
                                         }
-                                        msg = `Event with id = ${idEvent} deleted!`
+                                        msg = `Мероприятие  с id = ${idEvent} успешно удалено!`
                                         connection.release();
                                         resolve([{ status: 200 }, { msg: msg }]);
                                     })

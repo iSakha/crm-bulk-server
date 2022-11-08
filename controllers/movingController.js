@@ -155,23 +155,23 @@ exports.create = async (req, res) => {
             for (let i = 0; i < whQttArr.length; i++) {
                 switch (req.body.warehouseOut.id) {
                     case 2:
-                        if(whQttArr[i].qtt2 < req.body.model[i].qtt) {
-                            return res.status(400).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                        if (whQttArr[i].qtt2 < req.body.model[i].qtt) {
+                            return res.status(400).json({ msg: `Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии` });
                         }
                         break;
                     case 3:
-                        if(whQttArr[i].qtt3 < req.body.model[i].qtt) {
-                            return res.status(400).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                        if (whQttArr[i].qtt3 < req.body.model[i].qtt) {
+                            return res.status(400).json({ msg: `Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии` });
                         }
                         break;
                     case 4:
-                        if(whQttArr[i].qtt4 < req.body.model[i].qtt) {
-                            return res.status(400).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                        if (whQttArr[i].qtt4 < req.body.model[i].qtt) {
+                            return res.status(400).json({ msg: `Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии` });
                         }
                         break;
                     case 5:
-                        if(whQttArr[i].qtt5 < req.body.model[i].qtt) {
-                            return res.status(400).json({msg:`Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии`});
+                        if (whQttArr[i].qtt5 < req.body.model[i].qtt) {
+                            return res.status(400).json({ msg: `Необходимого количества приборов с id=${req.body.model[i].id} нет в наличии` });
                         }
                         break;
                 }
@@ -180,7 +180,7 @@ exports.create = async (req, res) => {
 
             responseDB = await trans.createMoving(movRow, modelArr);
 
-            msg = `Перемещение успешно создано. id = ${req.body.id}`
+            
 
             try {
 
@@ -196,8 +196,12 @@ exports.create = async (req, res) => {
                     message: 'Error from database'
                 }
             }
+            if (responseDB[0].status === 200) {
+                msg = responseDB[1].msg + ` id = ${req.body.id}`;
+                return res.status(responseDB[0].status).json([{ msg: msg }, rb]);
+            } else return res.status(responseDB[0].status).json({ msg: "Ошибка сервера базы данных"});
 
-            return res.status(responseDB[0].status).json([{ msg: msg }, rb]);
+
         } catch (error) {
             console.log("error:", error);
             return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
@@ -238,7 +242,7 @@ exports.update = async (req, res) => {
 
 
         console.log("transferArr:", transferArr);
-        console.log("modelArr:",modelArr);
+        console.log("modelArr:", modelArr);
 
         let notifyRow = [];
 
@@ -282,7 +286,10 @@ exports.update = async (req, res) => {
                 }
             }
 
-            return res.status(responseDB[0].status).json([{ msg: responseDB[1].msg }, req.body]);
+            if (responseDB[0].status === 200) {
+                msg = responseDB[1].msg + ` id = ${req.body.id}`;
+                return res.status(responseDB[0].status).json([{ msg: msg }, rb]);
+            } else return res.status(responseDB[0].status).json({ msg: "Ошибка сервера базы данных"});
 
         } catch (error) {
             console.log("error:", error);
@@ -346,7 +353,10 @@ exports.delete = async (req, res) => {
                     }
                 }
 
-                return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                if (responseDB[0].status === 200) {
+                    return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                } else return res.status(responseDB[0].status).json({ msg: "Ошибка сервера базы данных"});
+
 
             } else {
                 return res.status(200).json({ msg: `Перемещения с id=${req.params.id} не существует` });

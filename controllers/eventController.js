@@ -333,8 +333,8 @@ exports.createTrans = async (req, res) => {
             console.log("bookEquipArr from destruct:", bookEquipArr);
             req.body.booking = bookEquipArr;
             console.log("================   booking   ============");
-            let dateStart = new Date(req.body.time.start.slice(0, 10));
-            let dateEnd = new Date(req.body.time.end.slice(0, 10));
+            let dateStart = new Date(req.body.time.start.slice(0, -1));
+            let dateEnd = new Date(req.body.time.end.slice(0, -1));
             // console.log("createDaysArray:", createBookArray(dateStart, dateEnd, req.body));
             if (req.body.phase.length > 0) {
                 bookCalendarArr = createBookArray(dateStart, dateEnd, req.body);
@@ -358,20 +358,16 @@ exports.createTrans = async (req, res) => {
             if (req.body.phase.length > 0) {
                 if (req.body.booking.length > 0) {
                     responseDB = await trans.createEventFull(eventRow, phaseArr, bookEquipArr, bookCalendarArr);
-                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                 } else {
                     responseDB = await trans.createEventPhase(eventRow, phaseArr);
-                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                     rb.booking = [];
                 }
             } else {
                 if (req.body.booking.length > 0) {
                     responseDB = await trans.createEventEquip(eventRow, bookEquipArr);
-                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                     rb.phase = [];
                 } else {
                     responseDB = await trans.createEventShort(eventRow);
-                    // return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
                     rb.booking = [];
                     rb.phase = [];
                 }
@@ -393,8 +389,12 @@ exports.createTrans = async (req, res) => {
                 }
             }
 
-            msg = `Мероприятие успешно создано. idEvent = ${req.body.id}`;
-            return res.status(responseDB[0].status).json([{ msg: msg }, rb]);
+            if (responseDB[0].status === 200) {
+                msg = responseDB[1].msg + `idEvent = ${req.body.id}`;
+                return res.status(responseDB[0].status).json([{ msg: msg }, rb]);
+            } else return res.status(responseDB[0].status).json({ msg: "Ошибка сервера базы данных"});
+
+
 
         } catch (error) {
             console.log("error:", error);
@@ -412,9 +412,6 @@ exports.deleteTrans = async (req, res) => {
     let responseDB;
 
     if (status.status === 200) {
-
-
-
 
         console.log("authentication successfull!");
 
@@ -457,7 +454,9 @@ exports.deleteTrans = async (req, res) => {
                 }
 
 
-                return res.status(responseDB[0].status).json({ msg: responseDB[1].msg });
+                if (responseDB[0].status === 200) {
+                    return res.status(responseDB[0].status).json([{ msg: responseDB[1].msg }]);
+                } else return res.status(responseDB[0].status).json({ msg: "Ошибка сервера базы данных"});
 
             } else {
                 return res.status(200).json({ msg: `Мероприятия с id=${req.params.id} не существует` });
@@ -587,8 +586,10 @@ exports.updateTrans = async (req, res) => {
                 }
             }
 
-            msg = `Мероприятие успешно обновлено. idEvent = ${req.params.id}`
-            return res.status(responseDB[0].status).json([{ msg: msg }, rb, { "id": req.params.id }]);
+            if (responseDB[0].status === 200) {
+                msg = responseDB[1].msg + `idEvent = ${req.body.id}`;
+                return res.status(responseDB[0].status).json([{ msg: msg }, rb]);
+            } else return res.status(responseDB[0].status).json({ msg: "Ошибка сервера базы данных"});
 
         } catch (error) {
             console.log("error:", error);
@@ -609,7 +610,7 @@ exports.getSummary = async (req, res) => {
             const [result] = await Event.getSummary();
             console.log("result:", result);
             return res.status(200).json(result);
-            
+
         } catch (error) {
             console.log("error:", error);
             res.status(500).json({ msg: "We have problems with getting short event data from database" });

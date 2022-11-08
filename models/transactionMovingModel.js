@@ -22,14 +22,14 @@ const createMoving = (movingRow, modelArr) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
             return connection.beginTransaction(err => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
                 return connection.execute('INSERT INTO `t_movings` (id, idWhOut, idWhIn, dateOut, dateIn, idStatus, notes, idUser, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', movingRow, err => {
@@ -38,7 +38,7 @@ const createMoving = (movingRow, modelArr) => {
                             connection.release();
                             console.log("err:", err);
                             msg = "Inserting movingRow to `t_movings` table failed";
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
                     }
@@ -48,7 +48,7 @@ const createMoving = (movingRow, modelArr) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Inserting modelArr to `t_mov_equipment` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
                         }
@@ -58,11 +58,11 @@ const createMoving = (movingRow, modelArr) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = "Commit failed";
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
                             }
-                            msg = "Success!Created EventFull!"
+                            msg = "Перемещение успешно создано!"
                             connection.release();
                             resolve([{ status: 200 }, { msg: msg }]);
                         })
@@ -83,14 +83,14 @@ const updateMovingRequest = (idMoving, movingRow, modelArr) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
             return connection.beginTransaction(err => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
                 return connection.execute('UPDATE `t_movings` SET `t_movings`.`is_deleted` = 1 WHERE `t_movings`.`id`=?', [idMoving], err => {
@@ -99,7 +99,7 @@ const updateMovingRequest = (idMoving, movingRow, modelArr) => {
                             connection.release();
                             console.log("err:", err);
                             msg = "Mark eventRow as deleted in `t_movings` table failed";
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
                     }
@@ -110,7 +110,7 @@ const updateMovingRequest = (idMoving, movingRow, modelArr) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Mark eventRow as deleted in `t_mov_equipment` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
                         };
@@ -121,7 +121,7 @@ const updateMovingRequest = (idMoving, movingRow, modelArr) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = "Inserting movingRow to `t_movings` table failed";
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
                             }
@@ -131,7 +131,7 @@ const updateMovingRequest = (idMoving, movingRow, modelArr) => {
                                         connection.release();
                                         console.log("err:", err);
                                         msg = "Inserting modelArr to `t_mov_equipment` table failed";
-                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        resolve([{ status: 503 }, { msg: msg }]);
                                         return reject(msg);
                                     });
                                 }
@@ -141,11 +141,11 @@ const updateMovingRequest = (idMoving, movingRow, modelArr) => {
                                             connection.release();
                                             console.log("err:", err);
                                             msg = "Commit failed";
-                                            resolve([{ status: 400 }, { msg: msg }]);
+                                            resolve([{ status: 503 }, { msg: msg }]);
                                             return reject(msg);
                                         });
                                     }
-                                    msg = "Success!Updated Moving"
+                                    msg = "Перемещение успешно обновлено!"
                                     connection.release();
                                     resolve([{ status: 200 }, { msg: msg }]);
                                 })
@@ -167,14 +167,14 @@ const updateMovingShipped = (idMoving, movingRow, modelArr, modelArrCal) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
             return connection.beginTransaction(err => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
                 return connection.execute('UPDATE `t_movings` SET `t_movings`.`is_deleted` = 1 WHERE `t_movings`.`id`=?', [idMoving], err => {
@@ -183,7 +183,7 @@ const updateMovingShipped = (idMoving, movingRow, modelArr, modelArrCal) => {
                             connection.release();
                             console.log("err:", err);
                             msg = "Mark eventRow as deleted in `t_movings` table failed";
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
                     }
@@ -194,7 +194,7 @@ const updateMovingShipped = (idMoving, movingRow, modelArr, modelArrCal) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Mark eventRow as deleted in `t_mov_equipment` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
                         };
@@ -205,7 +205,7 @@ const updateMovingShipped = (idMoving, movingRow, modelArr, modelArrCal) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = "Mark eventRow as deleted in `t_mov_model_cal_trans` table failed";
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
                             };
@@ -217,7 +217,7 @@ const updateMovingShipped = (idMoving, movingRow, modelArr, modelArrCal) => {
                                         connection.release();
                                         console.log("err:", err);
                                         msg = "Inserting movingRow to `t_movings` table failed";
-                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        resolve([{ status: 503 }, { msg: msg }]);
                                         return reject(msg);
                                     });
                                 }
@@ -228,7 +228,7 @@ const updateMovingShipped = (idMoving, movingRow, modelArr, modelArrCal) => {
                                             connection.release();
                                             console.log("err:", err);
                                             msg = "Inserting modelArr to `t_mov_equipment` table failed";
-                                            resolve([{ status: 400 }, { msg: msg }]);
+                                            resolve([{ status: 503 }, { msg: msg }]);
                                             return reject(msg);
                                         });
                                     }
@@ -239,7 +239,7 @@ const updateMovingShipped = (idMoving, movingRow, modelArr, modelArrCal) => {
                                                 connection.release();
                                                 console.log("err:", err);
                                                 msg = "Inserting modelArr to `t_mov_equipment` table failed";
-                                                resolve([{ status: 400 }, { msg: msg }]);
+                                                resolve([{ status: 503 }, { msg: msg }]);
                                                 return reject(msg);
                                             });
                                         }
@@ -251,11 +251,11 @@ const updateMovingShipped = (idMoving, movingRow, modelArr, modelArrCal) => {
                                                     connection.release();
                                                     console.log("err:", err);
                                                     msg = "Commit failed";
-                                                    resolve([{ status: 400 }, { msg: msg }]);
+                                                    resolve([{ status: 503 }, { msg: msg }]);
                                                     return reject(msg);
                                                 });
                                             }
-                                            msg = "Success!Updated Moving"
+                                            msg = "Перемещение успешно обновлено!"
                                             connection.release();
                                             resolve([{ status: 200 }, { msg: msg }]);
                                         })
@@ -279,14 +279,14 @@ const updateMovingReceived = (idMoving, movingRow, modelArr, query) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
             return connection.beginTransaction(err => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
                 return connection.execute('UPDATE `t_movings` SET `t_movings`.`is_deleted` = 1 WHERE `t_movings`.`id`=?', [idMoving], err => {
@@ -295,7 +295,7 @@ const updateMovingReceived = (idMoving, movingRow, modelArr, query) => {
                             connection.release();
                             console.log("err:", err);
                             msg = "Mark eventRow as deleted in `t_movings` table failed";
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
                     }
@@ -306,7 +306,7 @@ const updateMovingReceived = (idMoving, movingRow, modelArr, query) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Mark eventRow as deleted in `t_mov_equipment` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
                         };
@@ -317,7 +317,7 @@ const updateMovingReceived = (idMoving, movingRow, modelArr, query) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = "Mark eventRow as deleted in `t_mov_model_cal_trans` table failed";
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
                             };
@@ -329,7 +329,7 @@ const updateMovingReceived = (idMoving, movingRow, modelArr, query) => {
                                         connection.release();
                                         console.log("err:", err);
                                         msg = "Inserting movingRow to `t_movings` table failed";
-                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        resolve([{ status: 503 }, { msg: msg }]);
                                         return reject(msg);
                                     });
                                 }
@@ -340,7 +340,7 @@ const updateMovingReceived = (idMoving, movingRow, modelArr, query) => {
                                             connection.release();
                                             console.log("err:", err);
                                             msg = "Inserting modelArr to `t_mov_equipment` table failed";
-                                            resolve([{ status: 400 }, { msg: msg }]);
+                                            resolve([{ status: 503 }, { msg: msg }]);
                                             return reject(msg);
                                         });
                                     }
@@ -351,7 +351,7 @@ const updateMovingReceived = (idMoving, movingRow, modelArr, query) => {
                                                 connection.release();
                                                 console.log("err:", err);
                                                 msg = "Inserting transferArr to `t_model` table failed";
-                                                resolve([{ status: 400 }, { msg: msg }]);
+                                                resolve([{ status: 503 }, { msg: msg }]);
                                                 return reject(msg);
                                             });
                                         }
@@ -363,11 +363,11 @@ const updateMovingReceived = (idMoving, movingRow, modelArr, query) => {
                                                     connection.release();
                                                     console.log("err:", err);
                                                     msg = "Commit failed";
-                                                    resolve([{ status: 400 }, { msg: msg }]);
+                                                    resolve([{ status: 503 }, { msg: msg }]);
                                                     return reject(msg);
                                                 });
                                             }
-                                            msg = "Success!Updated Moving"
+                                            msg = "Перемещение успешно обновлено!"
                                             connection.release();
                                             resolve([{ status: 200 }, { msg: msg }]);
                                         })
@@ -390,14 +390,14 @@ const deleteMoving = (idMoving, movingRow) => {
             if (err) {
                 msg = "Error occurred while getting the connection";
                 console.log("err:", err)
-                resolve([{ status: 400 }, { msg: msg }]);
+                resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
             return connection.beginTransaction(err => {
                 if (err) {
                     msg = "Error occurred while creating the transaction";
                     console.log("err:", err)
-                    resolve([{ status: 400 }, { msg: msg }]);
+                    resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
                 console.log("idMoving:", idMoving);
@@ -407,7 +407,7 @@ const deleteMoving = (idMoving, movingRow) => {
                             connection.release();
                             console.log("err:", err);
                             msg = `Mark is_deleted moving with id = ${idMoving} failed`;
-                            resolve([{ status: 400 }, { msg: msg }]);
+                            resolve([{ status: 503 }, { msg: msg }]);
                             return reject(msg);
                         });
                     };
@@ -418,7 +418,7 @@ const deleteMoving = (idMoving, movingRow) => {
                                 connection.release();
                                 console.log("err:", err);
                                 msg = "Copy movingRow to `t_movings` table failed";
-                                resolve([{ status: 400 }, { msg: msg }]);
+                                resolve([{ status: 503 }, { msg: msg }]);
                                 return reject(msg);
                             });
                         }
@@ -428,7 +428,7 @@ const deleteMoving = (idMoving, movingRow) => {
                                     connection.release();
                                     console.log("err:", err);
                                     msg = `Mark is_deleted t_mov_equipment table with idMoving = ${idMoving} failed`;
-                                    resolve([{ status: 400 }, { msg: msg }]);
+                                    resolve([{ status: 503 }, { msg: msg }]);
                                     return reject(msg);
                                 });
                             }
@@ -438,11 +438,11 @@ const deleteMoving = (idMoving, movingRow) => {
                                         connection.release();
                                         console.log("err:", err);
                                         msg = "Commit when delete event failed";
-                                        resolve([{ status: 400 }, { msg: msg }]);
+                                        resolve([{ status: 503 }, { msg: msg }]);
                                         return reject(msg);
                                     });
                                 }
-                                msg = `Moving with id = ${idMoving} deleted!`
+                                msg = `Перемещение с id = ${idMoving} успешно удалено!`
                                 connection.release();
                                 resolve([{ status: 200 }, { msg: msg }]);
                             })
