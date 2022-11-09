@@ -14,6 +14,7 @@ module.exports = class Event {
         this.status = { id: row.idStatus, name: row.status };
         this.location = { id: row.idLocation, city: row.city, name: row.place };
         this.manager = { id: row.idManager_1, name: row.manager_1 };
+        this.manager2 = { id: row.idManager_2, name: row.manager_2 };
         this.notes = row.notes;
     }
 
@@ -73,6 +74,12 @@ module.exports = class Event {
 
         eventRow.push(obj.creator.id);
         eventRow.push(obj.unixTime);
+
+        if (obj.hasOwnProperty('manager2')) {
+            if (obj.manager2 !== null) {
+                eventRow.push(obj.manager2.id);
+            } else eventRow.push(1);
+        } else eventRow.push(1);
 
         return eventRow;
     }

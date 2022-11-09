@@ -28,7 +28,7 @@ const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
                     resolve([{ status: 503 }, { msg: msg }]);
                     return reject(msg);
                 }
-                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
+                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime, idManager_2) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
                     if (err) {
                         return connection.rollback(() => {
                             connection.release();
@@ -100,6 +100,7 @@ const createEventFull = (eventRow, phaseArr, bookEquipArr, bookCalendarArr) => {
 
 const createEventPhase = (eventRow, phaseArr) => {
     console.log("createEventPhase transaction");
+    console.log("eventRow:", eventRow);
     let msg = "";
     return new Promise((resolve, reject) => {
         pool.getConnection((err, connection) => {
@@ -118,7 +119,7 @@ const createEventPhase = (eventRow, phaseArr) => {
                     return reject(msg);
                 }
 
-                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
+                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime, idManager_2) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
                     if (err) {
                         return connection.rollback(() => {
                             connection.release();
@@ -182,7 +183,7 @@ const createEventEquip = (eventRow, bookEquipArr) => {
                     return reject(msg);
                 }
 
-                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
+                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime, idManager_2) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
                     if (err) {
                         return connection.rollback(() => {
                             connection.release();
@@ -237,7 +238,7 @@ const createEventShort = (eventRow) => {
                 resolve([{ status: 503 }, { msg: msg }]);
                 return reject(msg);
             }
-            return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
+            return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime, idManager_2) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
                 if (err) {
                     return connection.rollback(() => {
                         connection.release();
@@ -325,7 +326,7 @@ const updateEventFull = (idEvent, eventRow, phaseArr, bookEquipArr, bookCalendar
                                 };
 
 
-                                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
+                                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime, idManager_2) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
                                     if (err) {
                                         return connection.rollback(() => {
                                             connection.release();
@@ -467,7 +468,7 @@ const updateEventPhase = (idEvent, eventRow, phaseArr) => {
                                     });
                                 };
 
-                                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
+                                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime, idManager_2) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
                                     if (err) {
                                         return connection.rollback(() => {
                                             connection.release();
@@ -582,7 +583,7 @@ const updateEventEquip = (idEvent, eventRow, bookEquipArr) => {
                                 };
 
 
-                                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
+                                return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime, idManager_2) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
                                     if (err) {
                                         return connection.rollback(() => {
                                             connection.release();
@@ -690,7 +691,7 @@ const updateEventShort = (idEvent, eventRow) => {
                                 });
                             };
 
-                            return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
+                            return connection.execute('INSERT INTO `t_events` (idEvent, idWarehouse, title, start, end, idManager_1, idLocation, idClient, idCreatedBy, notes, idStatus, idUpdatedBy, unixTime, idManager_2) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', eventRow, err => {
                                 if (err) {
                                     return connection.rollback(() => {
                                         connection.release();
